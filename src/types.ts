@@ -12,7 +12,7 @@ export type Scene = {
   /** Текст озвучки этой сцены. Ключевые слова для плашки субтитров — в *звёздочках*. */
   text: string;
   /** cartoon = мультяшная сцена, info = тёмный фон с инфографикой */
-  look: 'cartoon' | 'info';
+  look: 'cartoon' | 'info' | 'vhs';
   /** Для cartoon: время суток */
   sky?: 'day' | 'dusk';
   /** Для cartoon: плашка-контекст сверху (как «БРЯНСК • КОНТРАКТ») */
@@ -20,9 +20,27 @@ export type Scene = {
   /** Оттенок тёмного фона для info: red для блока рисков */
   mood?: 'neutral' | 'danger';
   items?: Item[];
+  /** look = 'vhs': грубая 2D-сцена с персонажами */
+  vhs?: {bg: 'market' | 'room'; chars: Char[]};
+  /** Звуковые эффекты: играют, когда прозвучит слово `cue` */
+  sfx?: {name: 'modem' | 'click' | 'rewind' | 'static'; cue: string; volume?: number}[];
 };
 
-export type Script = {slug: string; title: string; scenes: Scene[]};
+export type Char = {
+  who: 'bandit' | 'acct';
+  x: number;               // центр по горизонтали, 0..1080
+  mood?: 'idle' | 'shock';
+  talk?: boolean;          // двигает ртом, пока идёт озвучка сцены
+  flip?: boolean;
+};
+
+export type Script = {
+  slug: string; title: string; scenes: Scene[];
+  /** style 'vhs' включает помехи, таймкод и «пиратские» субтитры */
+  style?: 'clean' | 'vhs';
+  vhsDate?: string;                       // «14.09.1995» в углу
+  music?: {name: 'eurodance'; volume: number};
+};
 
 export type Word = {text: string; start: number; end: number; hl: boolean};
 export type TimedScene = {id: string; startSec: number; endSec: number; words: Word[]};

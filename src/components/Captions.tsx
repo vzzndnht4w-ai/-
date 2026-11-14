@@ -5,7 +5,7 @@ import {chunkWords} from '../lib/timing';
 import type {Word} from '../types';
 
 /** Субтитры по 2–3 слова: текущее слово — на жёлтой плашке, сказанные — белые, будущие — серые. */
-export const Captions: React.FC<{words: Word[]; top?: string}> = ({words, top = '66%'}) => {
+export const Captions: React.FC<{words: Word[]; top?: string; pirate?: boolean}> = ({words, top = '66%', pirate}) => {
   const frame = useCurrentFrame();
   const {fps, width} = useVideoConfig();
   const t = frame / fps;
@@ -15,6 +15,17 @@ export const Captions: React.FC<{words: Word[]; top?: string}> = ({words, top = 
   const chunk = chunks[ci];
   if (t > chunk[chunk.length - 1].end + 0.35) return null;
   const k = width / 1080;
+  if (pirate) {
+    // «пиратский перевод» 90-х: огромный жёлтый текст с чёрной обводкой, без плашек, по 2 строки
+    const text = chunk.map((w) => w.text).join(' ');
+    return (
+      <AbsoluteFill style={{top: '70%', alignItems: 'center', padding: `0 ${40 * k}px`}}>
+        <div style={{fontFamily: FONT, fontWeight: 900, fontSize: 104 * k, lineHeight: 1.08, color: '#ffe500', textAlign: 'center',
+          textTransform: 'uppercase', WebkitTextStroke: `${9 * k}px #000`, paintOrder: 'stroke fill',
+          textShadow: `${5 * k}px ${5 * k}px 0 #000`}}>{text}</div>
+      </AbsoluteFill>
+    );
+  }
   return (
     <AbsoluteFill style={{top, alignItems: 'center', justifyContent: 'flex-start', padding: `0 ${60 * k}px`}}>
       <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: `${8 * k}px ${20 * k}px`,
