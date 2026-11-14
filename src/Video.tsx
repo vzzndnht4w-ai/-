@@ -4,7 +4,7 @@ import {BG, loadFonts} from './theme';
 import {Captions} from './components/Captions';
 import {Cartoon} from './components/Cartoon';
 import {Items} from './components/Items';
-import {VhsScene} from './components/Characters';
+import {Camera, FullDoor, Insert, VhsScene} from './series/Sets';
 import {Shake, VhsOverlay} from './components/Vhs';
 import {itemTimes, scenesOf} from './lib/timing';
 import type {Script, Timeline} from './types';
@@ -36,7 +36,11 @@ export const Video: React.FC<VideoProps> = ({script, timeline}) => {
         return (
           <Sequence key={s.id} from={from} durationInFrames={dur}>
             {s.def.look === 'vhs' && s.def.vhs
-              ? <Shake><VhsScene bg={s.def.vhs.bg} chars={s.def.vhs.chars} speaking={speaking(words, fps)} /></Shake>
+              ? <Shake><Camera cam={s.def.vhs.cam}>
+                  {['kitchen', 'street'].includes(s.def.vhs.bg) ? <VhsScene vhs={s.def.vhs} speaking={speaking(words, fps)} />
+                    : s.def.vhs.bg === 'door' ? <FullDoor speaking={speaking(words, fps)} focus={s.def.vhs.data?.focus === 'thug'} />
+                    : <Insert vhs={s.def.vhs} speaking={speaking(words, fps)} />}
+                </Camera></Shake>
               : s.def.look === 'cartoon'
                 ? <Cartoon sky={s.def.sky} tag={s.def.tag} />
                 : <AbsoluteFill style={{background: s.def.mood === 'danger' ? BG.danger : BG.neutral}} />}

@@ -17,6 +17,18 @@ TAIL = 1.2          # тишина в конце, сек
 # Цепочка голосов: берём первый, которым удалось озвучить ВСЕ сцены (голос в одном видео не меняется).
 # Сервис иногда отказывает конкретному голосу на конкретном тексте (NoAudioReceived) — тогда идём к следующему.
 VOICES = ["ru-RU-DmitryNeural", "en-US-BrianMultilingualNeural", "ru-RU-SvetlanaNeural"]
+
+# Спикеры сериала: голос → запасные голоса, высота/темп и «плёночный» фильтр ffmpeg.
+# Если у сцены нет speaker — используется цепочка VOICES без обработки.
+NASAL = "highpass=f=280,lowpass=f=3600,equalizer=f=1100:t=q:w=1.2:g=7,acompressor=threshold=-18dB:ratio=3"
+PHONE = "highpass=f=350,lowpass=f=3200,acompressor=threshold=-20dB:ratio=4"
+SPEAKERS = {
+    "narrator": {"voices": ["ru-RU-DmitryNeural", "en-US-BrianMultilingualNeural"], "pitch": "-8Hz", "rate": "-6%", "af": NASAL},
+    "zhora":    {"voices": ["en-US-BrianMultilingualNeural", "ru-RU-DmitryNeural"], "pitch": "-14Hz", "rate": "+4%", "af": None},
+    "gena":     {"voices": ["ru-RU-DmitryNeural", "en-US-BrianMultilingualNeural"], "pitch": "+28Hz", "rate": "+14%", "af": None},
+    "tv":       {"voices": ["ru-RU-SvetlanaNeural"], "pitch": "+0Hz", "rate": "+10%", "af": PHONE},
+    "thug":     {"voices": ["en-US-BrianMultilingualNeural", "ru-RU-DmitryNeural"], "pitch": "-22Hz", "rate": "-4%", "af": None},
+}
 RATE = "+0%"
 
 
@@ -33,15 +45,29 @@ def clean(text):
     return text.replace("*", "")
 
 
+def restore_punct(raw, tokens):
+    """TTS отдаёт слова без знаков препинания. Возвращаем их из текста сценария (по порядку),
+    чтобы в субтитрах были «!» «?» «,» и блоки не склеивали разные фразы."""
+    n = lambda x: re.sub(r"[\W_]+", "", x.lower())
+    out, j = [], 0
+    for w in raw:
+        found = next((k for k in range(j, min(j + 4, len(tokens))) if n(tokens[k]) == n(w["text"])), None)
+        if found is not None:
+            out.append({**w, "text": tokens[found]}); j = found + 1
+        else:
+            out.append(w)
+    return out
+
+
 def probe(path):
     r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
                        capture_output=True, text=True, check=True)
     return float(r.stdout.strip())
 
 
-async def synth(text, out_mp3, voice):
+async def synth(text, out_mp3, voice, pitch="+0Hz", rate=None):
     import edge_tts
-    comm = edge_tts.Communicate(clean(text), voice, rate=RATE, boundary="WordBoundary",
+    comm = edge_tts.Communicate(clean(text), voice, rate=rate or RATE, pitch=pitch, boundary="WordBoundary",
                               proxy=os.environ.get("HTTPS_PROXY"))   # aiohttp сам прокси из env не берёт
     words = []
     with open(out_mp3, "wb") as f:
@@ -54,11 +80,41 @@ async def synth(text, out_mp3, voice):
     return words
 
 
+def synth_speakers(script, tmp):
+    """Озвучивает сцены по спикерам. Для каждого спикера берём первый голос из списка,
+    которым удалось озвучить ВСЕ его сцены (голос спикера внутри серии не меняется)."""
+    out, chosen = {}, {}
+    for spk in dict.fromkeys(sc["speaker"] for sc in script["scenes"] if sc.get("speaker")):
+        cfg = SPEAKERS[spk]
+        for voice in cfg["voices"]:
+            try:
+                res = {}
+                for i, sc in enumerate(script["scenes"]):
+                    if sc.get("speaker") != spk:
+                        continue
+                    mp3 = tmp / f"{i:03d}.mp3"
+                    raw = asyncio.run(synth(sc["text"], mp3, voice, cfg["pitch"], cfg["rate"]))
+                    if cfg["af"]:
+                        flt = tmp / f"{i:03d}_f.mp3"
+                        subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(mp3), "-af", cfg["af"], str(flt)], check=True)
+                        mp3 = flt
+                    res[i] = (mp3, raw)
+                out.update(res); chosen[spk] = voice
+                break
+            except Exception as e:  # noqa: BLE001
+                print(f"  {spk}: голос {voice} не справился ({type(e).__name__}) → следующий", file=sys.stderr)
+        else:
+            sys.exit(f"спикер {spk}: ни один голос не сработал")
+    print("голоса:", chosen)
+    return out
+
+
 def build(a, voice):
     vdir = ROOT / "videos" / a.slug
     script = json.loads((vdir / "script.json").read_text(encoding="utf-8"))
     tmp = Path(tempfile.mkdtemp())
     scenes, parts, t = [], [], 0.0
+    pre = {} if a.fake else synth_speakers(script, tmp)
 
     for i, sc in enumerate(script["scenes"]):
         marked = split_marked(sc["text"])
@@ -69,9 +125,13 @@ def build(a, voice):
                 words.append({"text": w, "start": c, "end": c + d, "hl": hl}); c += d
             dur = c
         else:
-            mp3 = tmp / f"{i:03d}.mp3"
-            raw = asyncio.run(synth(sc["text"], mp3, voice))
+            if i in pre:
+                mp3, raw = pre[i]
+            else:
+                mp3 = tmp / f"{i:03d}.mp3"
+                raw = asyncio.run(synth(sc["text"], mp3, voice))
             hl_set = {re.sub(r"\W", "", w.lower()) for w, h in marked if h}
+            raw = restore_punct(raw, [w for w, _ in marked])
             words = [{**w, "hl": re.sub(r"\W", "", w["text"].lower()) in hl_set} for w in raw]
             dur = probe(mp3)
             parts.append(mp3)
@@ -94,7 +154,7 @@ def build(a, voice):
     (vdir / "timeline.json").write_text(json.dumps(
         {"fps": FPS, "totalSec": round(total, 3), "audio": audio, "scenes": scenes}, ensure_ascii=False, indent=1),
         encoding="utf-8")
-    print(f"{a.slug}: {len(scenes)} сцен, {total:.1f} с, {'FAKE (без звука)' if a.fake else 'озвучено ' + voice}")
+    print(f"{a.slug}: {len(scenes)} сцен, {total:.1f} с, {'FAKE (без звука)' if a.fake else 'озвучено (см. выше)' if not a.voice else 'озвучено ' + voice}")
 
 
 def main():
