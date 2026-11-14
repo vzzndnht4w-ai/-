@@ -7,14 +7,16 @@
 Читает  videos/<slug>/script.json
 Пишет   videos/<slug>/timeline.json  и  public/audio/<slug>.mp3
 """
-import argparse, asyncio, json, re, subprocess, sys, tempfile
+import argparse, asyncio, json, os, re, subprocess, sys, tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 FPS = 30
 GAP = 0.30          # пауза между сценами, сек
 TAIL = 1.2          # тишина в конце, сек
-VOICE = "ru-RU-DmitryNeural"   # мужской; женский: ru-RU-SvetlanaNeural
+# Цепочка голосов: берём первый, которым удалось озвучить ВСЕ сцены (голос в одном видео не меняется).
+# Сервис иногда отказывает конкретному голосу на конкретном тексте (NoAudioReceived) — тогда идём к следующему.
+VOICES = ["ru-RU-DmitryNeural", "en-US-BrianMultilingualNeural", "ru-RU-SvetlanaNeural"]
 RATE = "+0%"
 
 
@@ -37,9 +39,10 @@ def probe(path):
     return float(r.stdout.strip())
 
 
-async def synth(text, out_mp3):
+async def synth(text, out_mp3, voice):
     import edge_tts
-    comm = edge_tts.Communicate(clean(text), VOICE, rate=RATE, boundary="WordBoundary")
+    comm = edge_tts.Communicate(clean(text), voice, rate=RATE, boundary="WordBoundary",
+                              proxy=os.environ.get("HTTPS_PROXY"))   # aiohttp сам прокси из env не берёт
     words = []
     with open(out_mp3, "wb") as f:
         async for ch in comm.stream():
@@ -51,11 +54,7 @@ async def synth(text, out_mp3):
     return words
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("slug")
-    ap.add_argument("--fake", action="store_true")
-    a = ap.parse_args()
+def build(a, voice):
     vdir = ROOT / "videos" / a.slug
     script = json.loads((vdir / "script.json").read_text(encoding="utf-8"))
     tmp = Path(tempfile.mkdtemp())
@@ -71,7 +70,7 @@ def main():
             dur = c
         else:
             mp3 = tmp / f"{i:03d}.mp3"
-            raw = asyncio.run(synth(sc["text"], mp3))
+            raw = asyncio.run(synth(sc["text"], mp3, voice))
             hl_set = {re.sub(r"\W", "", w.lower()) for w, h in marked if h}
             words = [{**w, "hl": re.sub(r"\W", "", w["text"].lower()) in hl_set} for w in raw]
             dur = probe(mp3)
@@ -95,7 +94,25 @@ def main():
     (vdir / "timeline.json").write_text(json.dumps(
         {"fps": FPS, "totalSec": round(total, 3), "audio": audio, "scenes": scenes}, ensure_ascii=False, indent=1),
         encoding="utf-8")
-    print(f"{a.slug}: {len(scenes)} сцен, {total:.1f} с, {'FAKE (без звука)' if a.fake else 'озвучено ' + VOICE}")
+    print(f"{a.slug}: {len(scenes)} сцен, {total:.1f} с, {'FAKE (без звука)' if a.fake else 'озвучено ' + voice}")
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("slug")
+    ap.add_argument("--fake", action="store_true")
+    ap.add_argument("--voice", help="принудительно один голос, без цепочки")
+    a = ap.parse_args()
+    script = json.loads((ROOT / "videos" / a.slug / "script.json").read_text(encoding="utf-8"))
+    chain = [a.voice] if a.voice else ([script["voice"]] if script.get("voice") else []) + VOICES
+    if a.fake:
+        return build(a, "fake")
+    for v in dict.fromkeys(chain):
+        try:
+            return build(a, v)
+        except Exception as e:  # noqa: BLE001
+            print(f"голос {v} не справился ({type(e).__name__}), пробую следующий", file=sys.stderr)
+    sys.exit("ни один голос не сработал — проверь доступ к speech.platform.bing.com")
 
 
 if __name__ == "__main__":
