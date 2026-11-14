@@ -1,0 +1,287 @@
+{
+ "fps": 30,
+ "totalSec": 16.703,
+ "audio": null,
+ "scenes": [
+  {
+   "id": "s1",
+   "startSec": 0.0,
+   "endSec": 4.017,
+   "words": [
+    {
+     "text": "Так",
+     "start": 0.0,
+     "end": 0.214,
+     "hl": false
+    },
+    {
+     "text": "вот,",
+     "start": 0.214,
+     "end": 0.5,
+     "hl": true
+    },
+    {
+     "text": "представь,",
+     "start": 0.5,
+     "end": 1.214,
+     "hl": false
+    },
+    {
+     "text": "что",
+     "start": 1.214,
+     "end": 1.429,
+     "hl": false
+    },
+    {
+     "text": "ты",
+     "start": 1.429,
+     "end": 1.609,
+     "hl": false
+    },
+    {
+     "text": "идёшь",
+     "start": 1.609,
+     "end": 1.966,
+     "hl": false
+    },
+    {
+     "text": "на",
+     "start": 1.966,
+     "end": 2.146,
+     "hl": false
+    },
+    {
+     "text": "курсы",
+     "start": 2.146,
+     "end": 2.503,
+     "hl": false
+    },
+    {
+     "text": "операторов",
+     "start": 2.503,
+     "end": 3.217,
+     "hl": false
+    },
+    {
+     "text": "дронов.",
+     "start": 3.217,
+     "end": 3.717,
+     "hl": false
+    }
+   ]
+  },
+  {
+   "id": "s2",
+   "startSec": 4.017,
+   "endSec": 9.003,
+   "words": [
+    {
+     "text": "Берут",
+     "start": 4.017,
+     "end": 4.374,
+     "hl": false
+    },
+    {
+     "text": "от",
+     "start": 4.374,
+     "end": 4.554,
+     "hl": false
+    },
+    {
+     "text": "18",
+     "start": 4.554,
+     "end": 4.734,
+     "hl": false
+    },
+    {
+     "text": "до",
+     "start": 4.734,
+     "end": 4.914,
+     "hl": false
+    },
+    {
+     "text": "45",
+     "start": 4.914,
+     "end": 5.094,
+     "hl": false
+    },
+    {
+     "text": "лет.",
+     "start": 5.094,
+     "end": 5.38,
+     "hl": false
+    },
+    {
+     "text": "Нужна",
+     "start": 5.38,
+     "end": 5.737,
+     "hl": false
+    },
+    {
+     "text": "годность",
+     "start": 5.737,
+     "end": 6.309,
+     "hl": false
+    },
+    {
+     "text": "«А»",
+     "start": 6.309,
+     "end": 6.523,
+     "hl": false
+    },
+    {
+     "text": "или",
+     "start": 6.523,
+     "end": 6.737,
+     "hl": false
+    },
+    {
+     "text": "«Б».",
+     "start": 6.737,
+     "end": 7.023,
+     "hl": false
+    },
+    {
+     "text": "И",
+     "start": 7.023,
+     "end": 7.203,
+     "hl": false
+    },
+    {
+     "text": "психологический",
+     "start": 7.203,
+     "end": 8.274,
+     "hl": false
+    },
+    {
+     "text": "отбор.",
+     "start": 8.274,
+     "end": 8.703,
+     "hl": false
+    }
+   ]
+  },
+  {
+   "id": "s3",
+   "startSec": 9.003,
+   "endSec": 12.7,
+   "words": [
+    {
+     "text": "Главное",
+     "start": 9.003,
+     "end": 9.503,
+     "hl": false
+    },
+    {
+     "text": "—",
+     "start": 9.503,
+     "end": 9.683,
+     "hl": false
+    },
+    {
+     "text": "риски.",
+     "start": 9.683,
+     "end": 10.111,
+     "hl": false
+    },
+    {
+     "text": "Выплаты",
+     "start": 10.111,
+     "end": 10.611,
+     "hl": false
+    },
+    {
+     "text": "обещают",
+     "start": 10.611,
+     "end": 11.111,
+     "hl": false
+    },
+    {
+     "text": "до",
+     "start": 11.111,
+     "end": 11.291,
+     "hl": false
+    },
+    {
+     "text": "1",
+     "start": 11.291,
+     "end": 11.471,
+     "hl": false
+    },
+    {
+     "text": "400",
+     "start": 11.471,
+     "end": 11.686,
+     "hl": false
+    },
+    {
+     "text": "000",
+     "start": 11.686,
+     "end": 11.9,
+     "hl": false
+    },
+    {
+     "text": "рублей.",
+     "start": 11.9,
+     "end": 12.4,
+     "hl": false
+    }
+   ]
+  },
+  {
+   "id": "s4",
+   "startSec": 12.7,
+   "endSec": 15.503,
+   "words": [
+    {
+     "text": "Это",
+     "start": 12.7,
+     "end": 12.914,
+     "hl": false
+    },
+    {
+     "text": "не",
+     "start": 12.914,
+     "end": 13.094,
+     "hl": false
+    },
+    {
+     "text": "игра.",
+     "start": 13.094,
+     "end": 13.451,
+     "hl": false
+    },
+    {
+     "text": "Читай",
+     "start": 13.451,
+     "end": 13.809,
+     "hl": false
+    },
+    {
+     "text": "контракт",
+     "start": 13.809,
+     "end": 14.38,
+     "hl": true
+    },
+    {
+     "text": "и",
+     "start": 14.38,
+     "end": 14.56,
+     "hl": false
+    },
+    {
+     "text": "решай",
+     "start": 14.56,
+     "end": 14.917,
+     "hl": false
+    },
+    {
+     "text": "сам.",
+     "start": 14.917,
+     "end": 15.203,
+     "hl": false
+    }
+   ]
+  }
+ ]
+}
