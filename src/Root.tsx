@@ -9,9 +9,12 @@ import type {Script, Timeline} from './types';
  */
 import {VIDEOS} from './videos.generated';
 import {TestScene} from './zombie/TestScene';
+import {RoomPreview, UiPreview} from './zombie/Preview';
 
 export const Root: React.FC = () => (
   <>
+    <Composition id="zroom" component={RoomPreview} width={1080} height={1920} fps={30} durationInFrames={60} defaultProps={{id: 'bg_window_yard'}} />
+    <Composition id="zui" component={UiPreview} width={1080} height={1920} fps={30} durationInFrames={90} defaultProps={{id: '', props: {}}} />
     <Composition id="ztest" component={TestScene} width={1080} height={1920} fps={30} durationInFrames={90} />
     {Object.entries(VIDEOS).map(([slug, v]) => {
       const script = v.script as unknown as Script;
