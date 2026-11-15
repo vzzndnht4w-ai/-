@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Озвучка серии 0: Silero v3 RU (локально, CPU). Артём — aidar, Громов — eugene.
+"""Озвучка серии 0: ElevenLabs. Артём — Wladimir (multilingual_v2), Громов — David (eleven_v3, stability 0.5).
 Каждому кадру подгоняется длительность под реальную длину речи, затем пересобираются
 prompts.json (duration_sec), subtitles.srt и audio/voiceover.mp3."""
 import json, re, subprocess, wave, sys
@@ -7,20 +7,31 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parent.parent
 EP=ROOT/"episodes/ep00_last_turn"; TMP=EP/"audio/_vo"; TMP.mkdir(parents=True,exist_ok=True)
 V=ROOT/"tools/voices"
-import torch, numpy as np
-_imp = torch.package.PackageImporter(str(V/"silero_v3_ru.pt")); SIL = _imp.load_pickle("tts_models", "model"); SIL.to("cpu")
+import hashlib, os
 SR = 48000
-# voice_performance: Артём — тихий, усталый шёпот-дневник; Громов — приглушённо, жёстко
-NARR = dict(speaker="aidar", rate="medium", pitch="low")
-GROM = dict(speaker="eugene", rate="medium", pitch="x-low")
+# voice_performance: Артём — тихий, усталый шёпот-дневник (Wladimir); Громов — хриплый командир (David, eleven_v3)
+NARR = dict(engine="el", voice_id="Ep3Y4SsCIRz1gD3edazw", model="eleven_multilingual_v2",
+            settings={"stability": 0.45, "similarity_boost": 0.8, "style": 0.35, "use_speaker_boost": True, "speed": 0.95})
+GROM = dict(engine="el", voice_id="Ga0Zjw9ZBbevb3wIda0V", model="eleven_v3",
+            settings={"stability": 0.5, "similarity_boost": 0.85},
+            tags={"cmd": "[firm, commanding, low gravelly voice]", "whisper": "[whispering, hoarse, tense]"})
 d=json.load(open(EP/"prompts.json"))
-
+CACHE=EP/"audio/_el"; CACHE.mkdir(parents=True,exist_ok=True)
+SPENT=[0]
 def tts(text,voice,ls,out):
-    """Синтез через SSML: паузы между предложениями, темп и высота по роли."""
-    sents=[x.strip() for x in re.split(r"(?<=[.!?…])\s+",text) if x.strip()]
-    body='<break time="350ms"/>'.join(sents)
-    ssml=f'<speak><prosody rate="{voice["rate"]}" pitch="{voice["pitch"]}">{body}</prosody></speak>'
-    SIL.save_wav(ssml_text=ssml, speaker=voice["speaker"], sample_rate=SR, put_accent=True, put_yo=True, audio_path=str(out))
+    """ElevenLabs: один запрос на реплику (естественная интонация), кэш по хэшу — повторные сборки бесплатны."""
+    t=text.strip()
+    if voice.get("tags"):
+        t=(voice["tags"]["whisper"]+" "+t.replace("Тихо. ","Тихо... ") if "Тихо" in t else voice["tags"]["cmd"]+" "+t)
+    key=hashlib.sha1(json.dumps([voice["voice_id"],voice["model"],voice["settings"],t],ensure_ascii=False).encode()).hexdigest()[:16]
+    mp3=CACHE/f"{key}.mp3"
+    if not mp3.exists():
+        body=json.dumps({"text":t,"model_id":voice["model"],"language_code":"ru","voice_settings":voice["settings"]})
+        r=subprocess.run(["curl","-s","-m","120","-w","%{http_code}","-o",str(mp3),"-X","POST","-H","Content-Type: application/json","-d",body,
+            f"https://api.elevenlabs.io/v1/text-to-speech/{voice['voice_id']}?output_format=mp3_44100_192"],capture_output=True,text=True)
+        if r.stdout.strip()!="200": raise RuntimeError(f"ElevenLabs {r.stdout} {mp3.read_bytes()[:200]}")
+        SPENT[0]+=len(t)
+    subprocess.run(["ffmpeg","-y","-loglevel","error","-i",str(mp3),"-ar",str(SR),"-ac","1","-c:a","pcm_s16le",str(out)],check=True)
 def dur(p):
     with wave.open(str(p)) as w: return w.getnframes()/w.getframerate()
 
@@ -97,4 +108,4 @@ with open(EP/"subtitles.srt","w",encoding="utf-8") as fh:
             fh.write(f"{n}\n{ts(t)} --> {ts(e)}\n{' '.join(c)}\n\n"); t=e
 json.dump(d,open(EP/"prompts.json","w"),ensure_ascii=False,indent=2)
 json.dump(groups,open(EP/"captions.json","w"),ensure_ascii=False,indent=1)
-print("TOTAL",round(cur,1),"s")
+print("ElevenLabs characters sent:",SPENT[0]); print("TOTAL",round(cur,1),"s")
