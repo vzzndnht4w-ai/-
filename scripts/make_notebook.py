@@ -41,7 +41,7 @@ def build(assets_path, out_path):
 """),
         code("""
 # 1. Установка библиотек (2–3 минуты)
-!pip -q install -U diffusers transformers accelerate safetensors "rembg[gpu]" pillow
+!pip -q install -U diffusers transformers accelerate safetensors "rembg[gpu]" compel pillow
 import torch
 assert torch.cuda.is_available(), "Нет GPU! Включи T4 в настройках среды и перезапусти."
 print("GPU:", torch.cuda.get_device_name(0))
@@ -77,6 +77,9 @@ pipe = StableDiffusionXLPipeline.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0", vae=vae,
     torch_dtype=torch.float16, variant="fp16", use_safetensors=True).to("cuda")
 pipe.set_progress_bar_config(disable=True)
+# Длинные промпты (>77 токенов) без обрезки — через compel (MIT)
+from compel import CompelForSDXL
+cmp = CompelForSDXL(pipe)
 """),
         code("""
 # 5. Генерация (пропускает уже готовые файлы)
@@ -92,8 +95,12 @@ for a in ASSETS["assets"]:
         path = f"{OUT}/{a['id']}_v{v}.png"
         if not os.path.exists(path):
             g = torch.Generator("cuda").manual_seed(int(a["seed"]) + v * 1000)
-            img = pipe(prompt=f"{style}, {a['prompt']}", negative_prompt=neg, width=w, height=h,
-                       num_inference_steps=30, guidance_scale=6.5, generator=g).images[0]
+            # у спрайтов главное — однотонный фон для вырезки, ставим это в начало
+            lead = "isolated single subject on a plain flat light grey background, " if a["kind"] == "sprite" else ""
+            c = cmp(f"{lead}{style}, {a['prompt']}", negative_prompt=neg)
+            img = pipe(prompt_embeds=c.embeds, pooled_prompt_embeds=c.pooled_embeds,
+                       negative_prompt_embeds=c.negative_embeds, negative_pooled_prompt_embeds=c.negative_pooled_embeds,
+                       width=w, height=h, num_inference_steps=30, guidance_scale=6.5, generator=g).images[0]
             img.save(path)
         if a["kind"] == "sprite":
             cut = f"{OUT}/{a['id']}_v{v}_cut.png"
