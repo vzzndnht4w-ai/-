@@ -4,3 +4,5 @@ episodes/*/_temp_clips/
 __pycache__/
 *.pyc
 hf-smoke/
+episodes/*/clips/
+episodes/*/audio/ambient_sfx.wav

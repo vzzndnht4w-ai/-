@@ -52,7 +52,6 @@ def runner(c, x, y, s, t, seed, color='#050908', rim=None):
         c.drawPath(capsule(sgn * 12, -190, sgn * 12 + a * 50, -90, 17, 13), P(color)); c.drawPath(capsule(sgn * 12 + a * 50, -90, sgn * 12 + a * 80, 0, 13, 10), P(color))
         c.drawPath(capsule(sgn * 36, -330, sgn * 36 - a * 50, -250, 12, 10), P(color)); c.drawPath(capsule(sgn * 36 - a * 50, -250, sgn * 36 - a * 90, -330 + abs(a) * 20, 10, 8), P(color))
     c.drawPath(capsule(0, -190, 0, -340, 36, 42), P(color)); c.drawPath(oval_path(6, -396, 28, 34), P(color))
-    if rim: c.drawPath(capsule(-20, -190, -20, -340, 4, 5), P(rim, .35, blend='add'))
     c.restore()
 
 # ===================== сцены =====================
@@ -208,7 +207,7 @@ def s18(c, t, T):
     wr = 640 * .27 * 1.12
     for k, sgn in enumerate((-1, 1)):
         a = math.radians(ang + 90 + sgn * 70); wx, wy = W / 2 + math.cos(a) * wr * 1.0, 900 + math.sin(a) * wr * 1.0
-        arm(c, (W / 2 + sgn * 330, 1840), (wx, wy), '#566059', '#c79b7d', 520, 520, bend=sgn, w=62)
+        arm(c, (W / 2 + sgn * 330, 1840), (wx, wy), '#566059', '#c79b7d', 520, 520, bend=sgn, w=44)
         hand(c, wx, wy, 1.8, 0, 'fist')
     bust(c, 'artyom', 540, 1560 + math.sin(t * 5) * 4, 1.5, t, dict(lightx=.6, lcol=ORANGE, squint=.7, frown=1, mouth=.3, tired=1, breath=2.5))
     c.drawRect(rect(0, 0, W, H), P(ORANGE, 1, shader=rad(W / 2, 100, 1300, [(ORANGE, .2 * pulse(t), 0), (ORANGE, 0, 1)]), blend='add')); vign(c, .8)
@@ -290,7 +289,7 @@ def s26(c, t, T):
 
 def s27(c, t, T):
     bg2.tunnel(c, t, lamp='#6fa890', dark=.5)
-    c.drawPaint(P('#000', .35))
+    c.drawPaint(P('#000', .15))
     infected(c, 620, 1560, 2.2, t, 'crouch', 3, color='#030504', rim='#9ae6b4', light=.6)
     vign(c, .9, 1100, 1000)
 

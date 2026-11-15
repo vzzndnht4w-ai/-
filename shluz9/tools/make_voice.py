@@ -78,6 +78,7 @@ subprocess.run(["ffmpeg","-y","-loglevel","error","-f","concat","-safe","0","-i"
 fx=("highpass=f=90,lowpass=f=7800,equalizer=f=220:t=q:w=1:g=2,acompressor=threshold=-22dB:ratio=3:attack=8:release=120:makeup=4,"
     "aecho=0.8:0.5:55|110:0.16|0.08,loudnorm=I=-16:TP=-1.5:LRA=8")
 subprocess.run(["ffmpeg","-y","-loglevel","error","-i",str(raw),"-af",fx,"-ar","48000","-ac","2","-b:a","192k",str(EP/"audio/voiceover.mp3")],check=True)
+groups=[]
 with open(EP/"subtitles.srt","w",encoding="utf-8") as fh:
     n=0
     for a,b,txt in srt:
@@ -89,6 +90,11 @@ with open(EP/"subtitles.srt","w",encoding="utf-8") as fh:
         tot=sum(len(c) for c in chunks); t=a
         for c in chunks:
             e=t+(b-a)*len(c)/tot; n+=1
+            wl=sum(len(w) for w in c); tw=t; ws=[]
+            for w in c:
+                we=tw+(e-t)*len(w)/wl; ws.append({"text":w,"start":round(tw,3),"end":round(we,3)}); tw=we
+            groups.append({"start":round(t,3),"end":round(e,3),"words":ws})
             fh.write(f"{n}\n{ts(t)} --> {ts(e)}\n{' '.join(c)}\n\n"); t=e
 json.dump(d,open(EP/"prompts.json","w"),ensure_ascii=False,indent=2)
+json.dump(groups,open(EP/"captions.json","w"),ensure_ascii=False,indent=1)
 print("TOTAL",round(cur,1),"s")

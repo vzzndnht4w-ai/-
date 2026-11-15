@@ -319,7 +319,7 @@ def infected(c, x, y, s, t, pose='stand', seed=0, color='#0a100e', rim='#6bff9e'
         # длинные пальцы
         for k in range(3): c.drawLine(hnd[i][0], hnd[i][1], hnd[i][0] + 26 + k * 5, hnd[i][1] + 18 + k * 14, P(color, 1, 'stroke', 5))
     c.drawPath(capsule(hip[0], hip[1], sh[0], sh[1], 62, 70), P(color))
-    c.drawPath(capsule(sh[0], sh[1], head[0], head[1], 20, 18), P(color))
+    c.drawPath(capsule(sh[0], sh[1], head[0], head[1], 34, 26), P(color))
     c.drawPath(oval_path(head[0], head[1], 38, 48), P(color))
     # глазницы и рот (едва видны)
     for sx in (-14, 14):
