@@ -38,28 +38,50 @@ index = f'''<!doctype html>
 </html>
 '''
 (HF / "index.html").write_text(index, encoding="utf-8")
+# ---- субтитры: перегруппировка по смыслу (знаки препинания), не более 4 слов / 24 знаков в фразе ----
+words = [w for g in caps for w in g["words"]]
+phr = []; cur = []
+def flush():
+    global cur
+    if cur: phr.append(cur); cur = []
+for w in words:
+    cur.append(w); txt = w["text"]
+    punct = txt[-1:] in ".,!?…:;—"
+    if punct or len(cur) >= 4 or sum(len(x["text"]) + 1 for x in cur) > 24:
+        carry = None
+        if not punct and len(cur) > 1 and len(txt) <= 3: carry = cur.pop()     # не заканчиваем фразу предлогом
+        flush()
+        if carry: cur.append(carry)
+flush()
+merged = []
+for g in phr:   # одиночные слова приклеиваем к соседней фразе
+    if merged and len(g) == 1 and len(merged[-1]) < 4 and g[0]["start"] - merged[-1][-1]["end"] < .5: merged[-1] += g
+    else: merged.append(g)
+caps = [{"start": g[0]["start"], "end": g[-1]["end"], "words": g} for g in merged]
 groups = []; js = []
 for i, g in enumerate(caps):
-    words = "".join(f'<span class="w" id="g{i}w{k}">{w["text"]}</span> ' for k, w in enumerate(g["words"]))
-    groups.append(f'    <div class="grp" id="g{i}"><span class="pill">{words}</span></div>')
+    words_html = "".join(f'<span class="w" id="g{i}w{k}">{w["text"]}</span> ' for k, w in enumerate(g["words"]))
+    groups.append(f'    <div class="grp" id="g{i}">{words_html}</div>')
     prev_end = caps[i - 1]["end"] if i else 0; nxt = caps[i + 1]["start"] if i + 1 < len(caps) else 1e9
-    a = max(.1, g["start"] - .06, prev_end + .04); b = min(g["end"] + .05, nxt - .06)
+    a = max(.08, g["start"] - .05, prev_end + .03); b = min(g["end"] + .12, nxt - .04)
     if b <= a + .2: b = a + .2
-    js.append(f'tl.set("#g{i}", {{opacity:0, y:14}}, 0); tl.to("#g{i}", {{opacity:1, y:0, duration:.14, ease:"power2.out"}}, {a:.3f});')
+    js.append(f'tl.set("#g{i}", {{opacity:0, scale:.92, y:18}}, 0); tl.to("#g{i}", {{opacity:1, scale:1, y:0, duration:.16, ease:"back.out(1.6)"}}, {a:.3f});')
     for k, w in enumerate(g["words"]):
-        js.append(f'tl.to("#g{i}w{k}", {{color:"#9dffc2", duration:.08, ease:"none"}}, {w["start"]:.3f});')
-    js.append(f'tl.to("#g{i}", {{opacity:0, duration:.12, ease:"power2.in"}}, {b-.12:.3f}); tl.set("#g{i}", {{opacity:0, visibility:"hidden"}}, {b:.3f});')
+        js.append(f'tl.to("#g{i}w{k}", {{color:"#ffb04d", scale:1.03, duration:.09, ease:"power2.out"}}, {w["start"]:.3f});')
+        js.append(f'tl.to("#g{i}w{k}", {{color:"#ffffff", scale:1, duration:.16, ease:"power1.inOut"}}, {max(w["end"], w["start"] + .12):.3f});')
+    js.append(f'tl.to("#g{i}", {{opacity:0, duration:.1, ease:"power2.in"}}, {b-.1:.3f}); tl.set("#g{i}", {{opacity:0, visibility:"hidden"}}, {b:.3f});')
 cap = f'''<template>
   <style>
     @font-face {{ font-family: "ShluzCap"; src: url("assets/fonts/LiberationSans-Bold.ttf"); font-weight: 700; }}
     #root {{ position: absolute; inset: 0; }}
-    .grp {{ position: absolute; left: 110px; width: 740px; bottom: 540px; text-align: center; opacity: 0;
-      font-family: "ShluzCap", sans-serif; font-weight: 700; font-size: 60px; line-height: 1.18; color: #f4efe2;
-      text-shadow: 0 3px 0 #05100c, 0 0 18px rgba(0,0,0,.9), 3px 3px 10px rgba(0,0,0,.8); overflow: visible; }}
-    .pill {{ background: rgba(4,12,9,.5); padding: 6px 24px 10px; border-radius: 24px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }}
-    .w {{ display: inline-block; color: #f4efe2; }}
+    #shade {{ position: absolute; left: 0; right: 0; bottom: 0; height: 760px; background: linear-gradient(to top, rgba(2,8,6,.72), rgba(2,8,6,0)); }}
+    .grp {{ position: absolute; left: 90px; width: 900px; bottom: 560px; text-align: center; opacity: 0;
+      font-family: "ShluzCap", sans-serif; font-weight: 700; font-size: 92px; line-height: 1.08; letter-spacing: -.5px; color: #fff;
+      -webkit-text-stroke: 10px #050d0a; paint-order: stroke fill; text-shadow: 0 6px 22px rgba(0,0,0,.85); overflow: visible; }}
+    .w {{ display: inline-block; color: rgba(255,255,255,.92); margin: 0 .09em; }}
   </style>
   <div id="root" data-composition-id="captions" data-width="1080" data-height="1920">
+    <div id="shade"></div>
 {chr(10).join(groups)}
   </div>
   <script>

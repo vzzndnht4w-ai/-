@@ -11,27 +11,44 @@ import hashlib, os
 SR = 48000
 # voice_performance: Артём — тихий, усталый шёпот-дневник (Wladimir); Громов — хриплый командир (David, eleven_v3)
 NARR = dict(engine="el", voice_id="Ep3Y4SsCIRz1gD3edazw", model="eleven_multilingual_v2",
-            settings={"stability": 0.45, "similarity_boost": 0.8, "style": 0.35, "use_speaker_boost": True, "speed": 0.95})
+            settings={"stability": 0.45, "similarity_boost": 0.8, "style": 0.35, "use_speaker_boost": True, "speed": 1.12})
 GROM = dict(engine="el", voice_id="Ga0Zjw9ZBbevb3wIda0V", model="eleven_v3",
             settings={"stability": 0.5, "similarity_boost": 0.85},
             tags={"cmd": "[firm, commanding, low gravelly voice]", "whisper": "[whispering, hoarse, tense]"})
 d=json.load(open(EP/"prompts.json"))
 CACHE=EP/"audio/_el"; CACHE.mkdir(parents=True,exist_ok=True)
 SPENT=[0]
-def tts(text,voice,ls,out):
-    """ElevenLabs: один запрос на реплику (естественная интонация), кэш по хэшу — повторные сборки бесплатны."""
-    t=text.strip()
-    if voice.get("tags"):
-        t=(voice["tags"]["whisper"]+" "+t.replace("Тихо. ","Тихо... ") if "Тихо" in t else voice["tags"]["cmd"]+" "+t)
-    key=hashlib.sha1(json.dumps([voice["voice_id"],voice["model"],voice["settings"],t],ensure_ascii=False).encode()).hexdigest()[:16]
+import numpy as np, difflib
+from faster_whisper import WhisperModel
+WM=WhisperModel("small",device="cpu",compute_type="int8")
+TAKES=3; SCORES={}
+def _norm(x): return re.sub(r"[^а-яё ]","",x.lower().replace("ё","е").replace("й","и")).split()
+def _asr_score(mp3,ref):
+    raw=subprocess.run(["ffmpeg","-v","error","-i",str(mp3),"-ar","16000","-ac","1","-f","f32le","-"],capture_output=True,check=True).stdout
+    segs,_=WM.transcribe(np.frombuffer(raw,np.float32),language="ru",beam_size=5)
+    return difflib.SequenceMatcher(None,_norm(ref),_norm(" ".join(s.text for s in segs))).ratio()
+def _take(t,voice,seed):
+    key=hashlib.sha1(json.dumps([voice["voice_id"],voice["model"],voice["settings"],t,seed],ensure_ascii=False).encode()).hexdigest()[:16]
     mp3=CACHE/f"{key}.mp3"
     if not mp3.exists():
-        body=json.dumps({"text":t,"model_id":voice["model"],"language_code":"ru","voice_settings":voice["settings"]})
+        body=json.dumps({"text":t,"model_id":voice["model"],"language_code":"ru","voice_settings":voice["settings"],"seed":seed})
         r=subprocess.run(["curl","-s","-m","120","-w","%{http_code}","-o",str(mp3),"-X","POST","-H","Content-Type: application/json","-d",body,
             f"https://api.elevenlabs.io/v1/text-to-speech/{voice['voice_id']}?output_format=mp3_44100_192"],capture_output=True,text=True)
         if r.stdout.strip()!="200": raise RuntimeError(f"ElevenLabs {r.stdout} {mp3.read_bytes()[:200]}")
         SPENT[0]+=len(t)
-    subprocess.run(["ffmpeg","-y","-loglevel","error","-i",str(mp3),"-ar",str(SR),"-ac","1","-c:a","pcm_s16le",str(out)],check=True)
+    return mp3
+def tts(text,voice,ls,out):
+    """ElevenLabs: TAKES дублей с разными seed, лучший по распознаванию речи (отсев коверканья слов). Кэш по хэшу."""
+    ref=text.strip(); t=ref
+    if voice.get("tags"):
+        t=(voice["tags"]["whisper"]+" "+t.replace("Тихо. ","Тихо... ") if "Тихо" in t else voice["tags"]["cmd"]+" "+t)
+    best=None
+    for k in range(TAKES):
+        mp3=_take(t,voice,1000+k*7); sc=_asr_score(mp3,ref)
+        if best is None or sc>best[0]+1e-9: best=(sc,mp3)
+        if sc>=0.995: break
+    SCORES[ref]=round(best[0],3)
+    subprocess.run(["ffmpeg","-y","-loglevel","error","-i",str(best[1]),"-ar",str(SR),"-ac","1","-c:a","pcm_s16le",str(out)],check=True)
 def dur(p):
     with wave.open(str(p)) as w: return w.getnframes()/w.getframerate()
 
@@ -51,7 +68,7 @@ for f in d["frames"]:
             else: L.append(("n",q))
     segs[f["id"]]=L
 
-PAD_LEAD,PAD_TAIL=0.25,0.55
+PAD_LEAD,PAD_TAIL=0.12,0.28
 cur=0.0; srt=[]; concat=[]
 def ts(x):
     h=int(x//3600);m=int(x%3600//60);s=x%60
@@ -65,7 +82,7 @@ for f in d["frames"]:
         wavs.append((out,txt))
     speech=sum(dur(o) for o,_ in wavs)+0.18*(len(wavs)-1)
     # быстрая речь — ни в коем случае не ускоряем: растягиваем кадр
-    total=max(float(f.get("base_duration_sec",f["duration_sec"])), round(speech+PAD_LEAD+PAD_TAIL,2))
+    total=max(2.4, round(speech+PAD_LEAD+PAD_TAIL,2))
     f["duration_sec"]=round(total,2)
     f["_speech"]=round(speech,2)
     # субтитры: по фразам внутри кадра, пропорционально длине
@@ -108,4 +125,4 @@ with open(EP/"subtitles.srt","w",encoding="utf-8") as fh:
             fh.write(f"{n}\n{ts(t)} --> {ts(e)}\n{' '.join(c)}\n\n"); t=e
 json.dump(d,open(EP/"prompts.json","w"),ensure_ascii=False,indent=2)
 json.dump(groups,open(EP/"captions.json","w"),ensure_ascii=False,indent=1)
-print("ElevenLabs characters sent:",SPENT[0]); print("TOTAL",round(cur,1),"s")
+print("ElevenLabs characters sent:",SPENT[0]); print("worst ASR scores:",sorted(SCORES.items(),key=lambda x:x[1])[:8]); print("TOTAL",round(cur,1),"s")
