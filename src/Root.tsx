@@ -10,6 +10,8 @@ import type {Script, Timeline} from './types';
 import {VIDEOS} from './videos.generated';
 import {TestScene} from './zombie/TestScene';
 import {RoomPreview, UiPreview} from './zombie/Preview';
+import {ZVideo} from './zombie/ZVideo';
+import {EP1} from './zombie/ep1';
 
 export const Root: React.FC = () => (
   <>
@@ -19,6 +21,15 @@ export const Root: React.FC = () => (
     {Object.entries(VIDEOS).map(([slug, v]) => {
       const script = v.script as unknown as Script;
       const timeline = v.timeline as unknown as Timeline;
+      if (slug.startsWith('zombie-')) {
+        return (
+          <Composition<any, any>
+            key={slug} id={slug} component={ZVideo} width={1080} height={1920} fps={timeline.fps}
+            durationInFrames={Math.max(1, Math.ceil(timeline.totalSec * timeline.fps))}
+            defaultProps={{script, timeline, defs: EP1}}
+          />
+        );
+      }
       return (
         <Composition<any, VideoProps>
           key={slug}

@@ -15,6 +15,8 @@ export const loadFonts = () => {
   if (loaded || typeof document === 'undefined') return;
   loaded = true;
   const faces: [string, string, string][] = [
+    ['cyrillic', '600', 'U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116'],
+    ['latin', '600', 'U+0000-00FF,U+0131,U+0152-0153,U+2013-2014,U+2018-201D,U+2022,U+2026,U+20AC,U+2122,U+2212'],
     ['cyrillic', '800', 'U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116'],
     ['cyrillic', '900', 'U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116'],
     ['latin', '800', 'U+0000-00FF,U+0131,U+0152-0153,U+2013-2014,U+2018-201D,U+2022,U+2026,U+20AC,U+2122,U+2212'],

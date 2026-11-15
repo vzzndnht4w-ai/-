@@ -1,0 +1,1461 @@
+{
+ "fps": 30,
+ "totalSec": 120.149,
+ "audio": "audio/zombie-ep01.mp3",
+ "scenes": [
+  {
+   "id": "01",
+   "startSec": 0.0,
+   "endSec": 6.215,
+   "words": [
+    {
+     "text": "Первый",
+     "start": 0.3,
+     "end": 0.8,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "этаж.",
+     "start": 0.8,
+     "end": 1.14,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Окно",
+     "start": 1.52,
+     "end": 2.0,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "—",
+     "start": 2.0,
+     "end": 2.0,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "на",
+     "start": 2.0,
+     "end": 2.1,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "уровне",
+     "start": 2.1,
+     "end": 2.42,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "глаз.",
+     "start": 2.42,
+     "end": 2.62,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Через",
+     "start": 3.18,
+     "end": 3.48,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "него",
+     "start": 3.48,
+     "end": 3.64,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "тебя",
+     "start": 3.64,
+     "end": 3.82,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "видят",
+     "start": 3.82,
+     "end": 4.2,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "раньше,",
+     "start": 4.2,
+     "end": 4.4,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "чем",
+     "start": 4.5,
+     "end": 4.62,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "ты",
+     "start": 4.62,
+     "end": 4.78,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "услышишь",
+     "start": 4.78,
+     "end": 5.18,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "шаги.",
+     "start": 5.18,
+     "end": 5.48,
+     "hl": false,
+     "spk": "narrator"
+    }
+   ]
+  },
+  {
+   "id": "02",
+   "startSec": 6.215,
+   "endSec": 11.203,
+   "words": [
+    {
+     "text": "Правило",
+     "start": 6.415,
+     "end": 6.975,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "номер",
+     "start": 6.975,
+     "end": 7.295,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "один.",
+     "start": 7.295,
+     "end": 7.535,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Первый",
+     "start": 8.075,
+     "end": 8.415,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "этаж",
+     "start": 8.415,
+     "end": 8.635,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "—",
+     "start": 8.635,
+     "end": 8.635,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "не",
+     "start": 8.635,
+     "end": 8.775,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "крепость.",
+     "start": 8.775,
+     "end": 9.195,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Это",
+     "start": 9.675,
+     "end": 9.975,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "аквариум.",
+     "start": 9.975,
+     "end": 10.455,
+     "hl": false,
+     "spk": "narrator"
+    }
+   ]
+  },
+  {
+   "id": "03",
+   "startSec": 11.203,
+   "endSec": 14.203,
+   "words": []
+  },
+  {
+   "id": "04",
+   "startSec": 14.203,
+   "endSec": 19.396,
+   "words": [
+    {
+     "text": "Окно",
+     "start": 14.503,
+     "end": 15.063,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "на",
+     "start": 15.063,
+     "end": 15.254,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "уровне",
+     "start": 15.254,
+     "end": 15.826,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "земли.",
+     "start": 15.826,
+     "end": 16.303,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Мы",
+     "start": 16.303,
+     "end": 16.583,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "видим",
+     "start": 16.583,
+     "end": 16.943,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "двор.",
+     "start": 16.943,
+     "end": 17.323,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Двор",
+     "start": 17.323,
+     "end": 18.063,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "видит",
+     "start": 18.063,
+     "end": 18.443,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "нас.",
+     "start": 18.443,
+     "end": 18.583,
+     "hl": false,
+     "spk": "mark"
+    }
+   ]
+  },
+  {
+   "id": "05",
+   "startSec": 19.396,
+   "endSec": 25.158,
+   "words": [
+    {
+     "text": "Тамара",
+     "start": 19.696,
+     "end": 20.176,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Петровна",
+     "start": 20.176,
+     "end": 20.656,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "хотела",
+     "start": 20.656,
+     "end": 20.996,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "чаю.",
+     "start": 20.996,
+     "end": 21.416,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Вышла",
+     "start": 21.856,
+     "end": 22.256,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "на",
+     "start": 22.256,
+     "end": 22.376,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "кухню.",
+     "start": 22.376,
+     "end": 22.776,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Окно",
+     "start": 23.256,
+     "end": 23.596,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "там",
+     "start": 23.596,
+     "end": 23.756,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "было",
+     "start": 23.756,
+     "end": 23.936,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "открыто.",
+     "start": 23.936,
+     "end": 24.396,
+     "hl": false,
+     "spk": "narrator"
+    }
+   ]
+  },
+  {
+   "id": "06",
+   "startSec": 25.158,
+   "endSec": 29.158,
+   "words": []
+  },
+  {
+   "id": "07",
+   "startSec": 29.158,
+   "endSec": 35.158,
+   "words": [
+    {
+     "text": "Тамара",
+     "start": 29.358,
+     "end": 29.83,
+     "hl": false,
+     "spk": "inna"
+    },
+    {
+     "text": "Петровна?",
+     "start": 29.83,
+     "end": 30.458,
+     "hl": false,
+     "spk": "inna"
+    }
+   ]
+  },
+  {
+   "id": "08",
+   "startSec": 35.158,
+   "endSec": 39.214,
+   "words": [
+    {
+     "text": "Цена",
+     "start": 35.458,
+     "end": 35.938,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "ошибки",
+     "start": 35.938,
+     "end": 36.318,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "—",
+     "start": 36.318,
+     "end": 36.398,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "человек.",
+     "start": 36.398,
+     "end": 36.678,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Одно",
+     "start": 37.198,
+     "end": 37.638,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "открытое",
+     "start": 37.638,
+     "end": 38.138,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "окно.",
+     "start": 38.138,
+     "end": 38.458,
+     "hl": false,
+     "spk": "narrator"
+    }
+   ]
+  },
+  {
+   "id": "09",
+   "startSec": 39.214,
+   "endSec": 47.52,
+   "words": [
+    {
+     "text": "Окна",
+     "start": 39.514,
+     "end": 39.994,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "закрываем",
+     "start": 39.994,
+     "end": 40.574,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "изнутри.",
+     "start": 40.574,
+     "end": 41.174,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Плотно.",
+     "start": 41.434,
+     "end": 42.034,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Мебель",
+     "start": 42.434,
+     "end": 42.954,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "—",
+     "start": 42.954,
+     "end": 42.954,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "к",
+     "start": 42.954,
+     "end": 43.134,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "стене,",
+     "start": 43.134,
+     "end": 43.594,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "не",
+     "start": 43.594,
+     "end": 43.734,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "поперёк.",
+     "start": 43.734,
+     "end": 44.314,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "И",
+     "start": 44.972,
+     "end": 45.292,
+     "hl": false,
+     "spk": "inna"
+    },
+    {
+     "text": "не",
+     "start": 45.292,
+     "end": 45.412,
+     "hl": false,
+     "spk": "inna"
+    },
+    {
+     "text": "стоять",
+     "start": 45.412,
+     "end": 45.832,
+     "hl": false,
+     "spk": "inna"
+    },
+    {
+     "text": "напротив",
+     "start": 45.832,
+     "end": 46.212,
+     "hl": false,
+     "spk": "inna"
+    },
+    {
+     "text": "стекла.",
+     "start": 46.212,
+     "end": 46.772,
+     "hl": false,
+     "spk": "inna"
+    }
+   ]
+  },
+  {
+   "id": "10",
+   "startSec": 47.52,
+   "endSec": 54.572,
+   "words": [
+    {
+     "text": "Так",
+     "start": 47.82,
+     "end": 48.16,
+     "hl": false,
+     "spk": "lesha"
+    },
+    {
+     "text": "мы",
+     "start": 48.16,
+     "end": 48.34,
+     "hl": false,
+     "spk": "lesha"
+    },
+    {
+     "text": "ничего",
+     "start": 48.34,
+     "end": 48.64,
+     "hl": false,
+     "spk": "lesha"
+    },
+    {
+     "text": "не",
+     "start": 48.64,
+     "end": 48.88,
+     "hl": false,
+     "spk": "lesha"
+    },
+    {
+     "text": "увидим.",
+     "start": 48.88,
+     "end": 49.36,
+     "hl": false,
+     "spk": "lesha"
+    },
+    {
+     "text": "Нам",
+     "start": 50.689,
+     "end": 51.089,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "и",
+     "start": 51.089,
+     "end": 51.229,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "не",
+     "start": 51.229,
+     "end": 51.349,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "нужно.",
+     "start": 51.349,
+     "end": 51.709,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Нужно,",
+     "start": 52.189,
+     "end": 52.669,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "чтобы",
+     "start": 52.689,
+     "end": 52.829,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "не",
+     "start": 52.829,
+     "end": 53.129,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "увидели",
+     "start": 53.129,
+     "end": 53.589,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "нас.",
+     "start": 53.589,
+     "end": 53.789,
+     "hl": false,
+     "spk": "mark"
+    }
+   ]
+  },
+  {
+   "id": "11",
+   "startSec": 54.572,
+   "endSec": 60.543,
+   "words": [
+    {
+     "text": "Свет",
+     "start": 54.872,
+     "end": 55.292,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "—",
+     "start": 55.292,
+     "end": 55.292,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "не",
+     "start": 55.292,
+     "end": 55.572,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "напротив",
+     "start": 55.572,
+     "end": 56.132,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "окон.",
+     "start": 56.132,
+     "end": 56.932,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Только",
+     "start": 56.932,
+     "end": 57.252,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "в",
+     "start": 57.252,
+     "end": 57.432,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "комнате",
+     "start": 57.432,
+     "end": 57.852,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "без",
+     "start": 57.852,
+     "end": 58.052,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "окон",
+     "start": 58.052,
+     "end": 58.352,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "наружу.",
+     "start": 58.352,
+     "end": 58.852,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Спим",
+     "start": 58.852,
+     "end": 59.512,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "там.",
+     "start": 59.512,
+     "end": 59.712,
+     "hl": false,
+     "spk": "mark"
+    }
+   ]
+  },
+  {
+   "id": "12",
+   "startSec": 60.543,
+   "endSec": 72.682,
+   "words": [
+    {
+     "text": "Вход",
+     "start": 60.843,
+     "end": 61.263,
+     "hl": false,
+     "spk": "inna"
+    },
+    {
+     "text": "один.",
+     "start": 61.263,
+     "end": 61.563,
+     "hl": false,
+     "spk": "inna"
+    },
+    {
+     "text": "А",
+     "start": 62.003,
+     "end": 62.283,
+     "hl": false,
+     "spk": "inna"
+    },
+    {
+     "text": "если",
+     "start": 62.283,
+     "end": 62.483,
+     "hl": false,
+     "spk": "inna"
+    },
+    {
+     "text": "пожар?",
+     "start": 62.483,
+     "end": 62.983,
+     "hl": false,
+     "spk": "inna"
+    },
+    {
+     "text": "Из",
+     "start": 63.619,
+     "end": 63.999,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "каждой",
+     "start": 63.999,
+     "end": 64.359,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "комнаты",
+     "start": 64.359,
+     "end": 64.779,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "два",
+     "start": 64.779,
+     "end": 64.979,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "пути.",
+     "start": 64.979,
+     "end": 65.439,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Дверь",
+     "start": 65.439,
+     "end": 66.082,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "и",
+     "start": 66.082,
+     "end": 66.339,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "окно.",
+     "start": 66.339,
+     "end": 66.659,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Окно",
+     "start": 67.099,
+     "end": 67.519,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "закрыто,",
+     "start": 67.519,
+     "end": 68.139,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "но",
+     "start": 68.139,
+     "end": 68.259,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "открывается",
+     "start": 68.259,
+     "end": 68.939,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "изнутри.",
+     "start": 68.939,
+     "end": 69.479,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Выйти",
+     "start": 70.204,
+     "end": 70.744,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "—",
+     "start": 70.744,
+     "end": 70.824,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "меньше",
+     "start": 70.824,
+     "end": 70.984,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "чем",
+     "start": 70.984,
+     "end": 71.264,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "за",
+     "start": 71.264,
+     "end": 71.404,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "две",
+     "start": 71.404,
+     "end": 71.564,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "минуты.",
+     "start": 71.564,
+     "end": 71.964,
+     "hl": false,
+     "spk": "narrator"
+    }
+   ]
+  },
+  {
+   "id": "13",
+   "startSec": 72.682,
+   "endSec": 84.612,
+   "words": [
+    {
+     "text": "Холодно.",
+     "start": 72.982,
+     "end": 73.622,
+     "hl": false,
+     "spk": "lesha"
+    },
+    {
+     "text": "Можно",
+     "start": 74.002,
+     "end": 74.342,
+     "hl": false,
+     "spk": "lesha"
+    },
+    {
+     "text": "свечу?",
+     "start": 74.342,
+     "end": 74.862,
+     "hl": false,
+     "spk": "lesha"
+    },
+    {
+     "text": "Нет.",
+     "start": 75.573,
+     "end": 76.033,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Огонь",
+     "start": 76.033,
+     "end": 76.873,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "в",
+     "start": 76.873,
+     "end": 76.973,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "закрытой",
+     "start": 76.973,
+     "end": 77.473,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "комнате",
+     "start": 77.473,
+     "end": 78.053,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "—",
+     "start": 78.053,
+     "end": 78.182,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "угарный",
+     "start": 78.182,
+     "end": 78.633,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "газ.",
+     "start": 78.633,
+     "end": 78.873,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Его",
+     "start": 79.453,
+     "end": 79.673,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "не",
+     "start": 79.673,
+     "end": 79.893,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "видно.",
+     "start": 79.893,
+     "end": 80.193,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Сначала",
+     "start": 80.996,
+     "end": 81.596,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "болит",
+     "start": 81.596,
+     "end": 81.936,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "голова.",
+     "start": 81.936,
+     "end": 82.336,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Потом",
+     "start": 82.776,
+     "end": 83.056,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "хочется",
+     "start": 83.056,
+     "end": 83.356,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "спать.",
+     "start": 83.356,
+     "end": 83.856,
+     "hl": false,
+     "spk": "narrator"
+    }
+   ]
+  },
+  {
+   "id": "14",
+   "startSec": 84.612,
+   "endSec": 95.554,
+   "words": [
+    {
+     "text": "Вода.",
+     "start": 84.912,
+     "end": 85.452,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Нас",
+     "start": 85.452,
+     "end": 86.104,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "трое.",
+     "start": 86.104,
+     "end": 86.972,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Пока",
+     "start": 86.972,
+     "end": 87.332,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "идёт",
+     "start": 87.332,
+     "end": 87.732,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "—",
+     "start": 87.732,
+     "end": 87.892,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "набираем.",
+     "start": 87.892,
+     "end": 88.412,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Только",
+     "start": 88.812,
+     "end": 89.132,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "пищевая",
+     "start": 89.132,
+     "end": 89.712,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "посуда.",
+     "start": 89.712,
+     "end": 90.212,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Примерно",
+     "start": 90.951,
+     "end": 91.571,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "четыре",
+     "start": 91.571,
+     "end": 91.831,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "литра",
+     "start": 91.831,
+     "end": 92.191,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "на",
+     "start": 92.191,
+     "end": 92.271,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "человека",
+     "start": 92.271,
+     "end": 92.691,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "в",
+     "start": 92.691,
+     "end": 92.871,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "сутки.",
+     "start": 92.871,
+     "end": 93.211,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Минимум",
+     "start": 93.651,
+     "end": 94.131,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "трое",
+     "start": 94.131,
+     "end": 94.311,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "суток.",
+     "start": 94.311,
+     "end": 94.811,
+     "hl": false,
+     "spk": "narrator"
+    }
+   ]
+  },
+  {
+   "id": "15",
+   "startSec": 95.554,
+   "endSec": 109.149,
+   "words": [
+    {
+     "text": "Теперь",
+     "start": 95.854,
+     "end": 96.294,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "тихо.",
+     "start": 96.294,
+     "end": 97.014,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Ни",
+     "start": 97.274,
+     "end": 97.474,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "шагов.",
+     "start": 97.474,
+     "end": 98.434,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Ни",
+     "start": 98.434,
+     "end": 98.494,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "посуды.",
+     "start": 98.494,
+     "end": 99.054,
+     "hl": false,
+     "spk": "mark"
+    },
+    {
+     "text": "Правило",
+     "start": 104.372,
+     "end": 104.852,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "записано.",
+     "start": 104.852,
+     "end": 105.412,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Сперва",
+     "start": 105.412,
+     "end": 106.147,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "—",
+     "start": 106.147,
+     "end": 106.392,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "окна.",
+     "start": 106.392,
+     "end": 106.832,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Всё",
+     "start": 106.832,
+     "end": 107.552,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "остальное",
+     "start": 107.552,
+     "end": 107.972,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "потом.",
+     "start": 107.972,
+     "end": 108.292,
+     "hl": false,
+     "spk": "narrator"
+    }
+   ]
+  },
+  {
+   "id": "16",
+   "startSec": 109.149,
+   "endSec": 119.149,
+   "words": [
+    {
+     "text": "Вывод:",
+     "start": 109.349,
+     "end": 109.949,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "на",
+     "start": 109.949,
+     "end": 110.169,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "первом",
+     "start": 110.169,
+     "end": 110.529,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "этаже",
+     "start": 110.529,
+     "end": 110.789,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "закрывай",
+     "start": 110.789,
+     "end": 111.269,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "окна",
+     "start": 111.269,
+     "end": 111.549,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "изнутри",
+     "start": 111.549,
+     "end": 111.989,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "и",
+     "start": 111.989,
+     "end": 112.149,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "держись",
+     "start": 112.149,
+     "end": 112.469,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "от",
+     "start": 112.469,
+     "end": 112.569,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "них",
+     "start": 112.569,
+     "end": 112.689,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "подальше.",
+     "start": 112.689,
+     "end": 113.249,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "Дальше",
+     "start": 113.649,
+     "end": 114.049,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "—",
+     "start": 114.049,
+     "end": 114.049,
+     "hl": false,
+     "spk": "narrator"
+    },
+    {
+     "text": "вода.",
+     "start": 114.049,
+     "end": 114.369,
+     "hl": false,
+     "spk": "narrator"
+    }
+   ]
+  }
+ ]
+}

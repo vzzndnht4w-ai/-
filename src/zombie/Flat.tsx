@@ -1,4 +1,5 @@
 import React from 'react';
+import {useCurrentFrame} from 'remotion';
 import {FONT} from '../theme';
 
 type P = [number, number];
@@ -27,20 +28,24 @@ export type Look = {
   style: 'short' | 'bun' | 'messy' | 'cap'; width?: number; stubble?: boolean; glasses?: boolean;
 };
 export type Mood = 'tired' | 'fear' | 'stern' | 'sad' | 'blank';
-export type Pose = 'stand' | 'notebook' | 'mouth' | 'hug' | 'wall';
+export type Pose = 'stand' | 'notebook' | 'mouth' | 'hug' | 'wall' | 'kettle' | 'candle';
 
-const POSES: Record<Pose, {l: P; r: P; item?: 'notebook'}> = {
+const POSES: Record<Pose, {l: P; r: P; item?: 'notebook' | 'kettle' | 'candle'}> = {
   stand: {l: [-118, 392], r: [118, 392]},
   notebook: {l: [-44, 286], r: [50, 292], item: 'notebook'},
   mouth: {l: [-110, 372], r: [26, 96]},
   hug: {l: [66, 258], r: [-66, 262]},
   wall: {l: [-118, 392], r: [118, 392]},
+  kettle: {l: [-118, 392], r: [62, 300], item: 'kettle'},
+  candle: {l: [-118, 392], r: [56, 290], item: 'candle'},
 };
 
 /** Плоский персонаж: без контура, объём — градиентами и тёмной стороной, как в референсе. */
 export const Person: React.FC<{id: string; look: Look; mood?: Mood; pose?: Pose; lookX?: number; flip?: boolean;
-  x: number; y: number; scale?: number; lightSide?: 1 | -1}> = ({id, look, mood = 'tired', pose = 'stand', lookX = 0, flip, x, y, scale = 1, lightSide = 1}) => {
+  x: number; y: number; scale?: number; lightSide?: 1 | -1; mouth?: number; blink?: boolean; breath?: number; age?: boolean}> =
+({id, look, mood = 'tired', pose = 'stand', lookX = 0, flip, x, y, scale = 1, lightSide = 1, mouth = 0, blink = false, breath = 0, age = false}) => {
   const w = look.width ?? 1, ps = POSES[pose];
+  const dk = (k: number) => shade(look.skin, k);
   const Lg = (n: string, c: string) => (
     <linearGradient id={`${id}-${n}`} x1={lightSide === 1 ? 1 : 0} y1="0" x2={lightSide === 1 ? 0 : 1} y2="0">
       <stop offset="0" stopColor={shade(c, 1.28)} /><stop offset=".35" stopColor={c} /><stop offset="1" stopColor={shade(c, 0.5)} />
@@ -50,48 +55,72 @@ export const Person: React.FC<{id: string; look: Look; mood?: Mood; pose?: Pose;
     const d = `M${s[0]} ${s[1]} L${e[0]} ${e[1]} L${h[0]} ${h[1]}`;
     return <g><path d={d} fill="none" stroke={shade(look.top, 0.55)} strokeWidth="52" strokeLinecap="round" strokeLinejoin="round" />
       <path d={d} fill="none" stroke={`url(#${id}-top)`} strokeWidth="46" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={h[0]} cy={h[1]} r="22" fill={look.skin} /><circle cx={h[0]} cy={h[1]} r="22" fill={shade(look.skin, 0.8)} opacity=".25" /></g>;
+      <circle cx={h[0]} cy={h[1]} r="21" fill={look.skin} /><circle cx={h[0]} cy={h[1]} r="21" fill={dk(0.8)} opacity=".22" /></g>;
   };
-  const browY: Record<Mood, [number, number]> = {tired: [-3, 3], fear: [-14, -14], stern: [5, -5].map((v) => v) as [number, number], sad: [-6, 6], blank: [0, 0]};
-  const [bl, br] = browY[mood];
-  const eyeR = mood === 'fear' ? 12 : 9;
-  const mouth = mood === 'fear' ? <ellipse cx="0" cy="92" rx="13" ry="16" fill="#2a1414" />
-    : mood === 'sad' ? <path d="M-18 98 Q0 84 18 98" fill="none" stroke="#3a1c1c" strokeWidth="5" strokeLinecap="round" />
-    : <path d="M-16 94 L16 94" fill="none" stroke="#3a1c1c" strokeWidth="5" strokeLinecap="round" />;
+  // брови: [левая, правая] = [подъём, наклон°]; наклон >0 — внутренний край ниже (сердитый), <0 — выше (печальный/испуг)
+  const B: Record<Mood, {lift: number; tilt: number}> = {tired: {lift: 2, tilt: -4}, fear: {lift: -12, tilt: -10}, stern: {lift: 4, tilt: 14}, sad: {lift: -2, tilt: -16}, blank: {lift: 0, tilt: 0}};
+  const bm = B[mood];
+  const eyeH = mood === 'fear' ? 1.5 : mood === 'tired' ? 0.72 : mood === 'stern' ? 0.85 : 1;
+  const open = Math.max(mouth, mood === 'fear' && !blink ? 0.45 : 0);
+  const lipC = '#8a4a47';
+  const mw = mood === 'fear' ? 11 : 16 - open * 2;
+  const faceMouth = open > 0.12
+    ? <g><path d={`M${-mw} 77 Q0 ${76 - open} ${mw} 77 Q${mw * 0.9} ${80 + open * 15} 0 ${81 + open * 15} Q${-mw * 0.9} ${80 + open * 15} ${-mw} 77Z`} fill="#2a1213" />
+        {mood !== 'fear' && <path d={`M${-mw + 2} 77.5 Q0 76 ${mw - 2} 77.5 L${mw - 4} ${81 + open * 2} Q0 ${80 + open * 2} ${-mw + 4} ${81 + open * 2}Z`} fill="#e9e3d6" opacity=".9" />}</g>
+    : mood === 'sad' ? <path d="M-17 82 Q0 71 17 82" fill="none" stroke={lipC} strokeWidth="5" strokeLinecap="round" />
+    : mood === 'stern' ? <path d="M-16 79 L16 79" fill="none" stroke={lipC} strokeWidth="5" strokeLinecap="round" />
+    : <path d="M-17 77 Q-8 73 0 75 Q8 73 17 77 Q8 85 0 86 Q-8 85 -17 77Z" fill={lipC} opacity=".85" />;
+  const Eye = ({cx, dir}: {cx: number; dir: number}) => {
+    const ry = 9 * eyeH;
+    if (blink) return <path d={`M${cx - 14} 18 Q${cx} 22 ${cx + 14} 18`} fill="none" stroke="#1a1416" strokeWidth="3.6" strokeLinecap="round" />;
+    return <g>
+      <path d={`M${cx - 15} 16 Q${cx} ${16 - ry} ${cx + 15} 16 Q${cx} ${16 + ry * 0.75} ${cx - 15} 16Z`} fill="#ece7df" />
+      <circle cx={cx + lookX * 0.55} cy={16 + (mood === 'fear' ? 0 : 1)} r={Math.min(7.2, 5.4 + 1.4 * eyeH)} fill="#241b17" />
+      <circle cx={cx + lookX * 0.55 - 2} cy={14} r="1.9" fill="#fff" opacity=".85" />
+      <path d={`M${cx - 16} 16 Q${cx} ${15 - ry * 1.1} ${cx + 16} 16`} fill="none" stroke="#17110f" strokeWidth="3.4" strokeLinecap="round" />
+      {mood === 'tired' && <path d={`M${cx - 13} 25 Q${cx} 31 ${cx + 13} 25`} fill="none" stroke={dk(0.55)} strokeWidth="4" strokeLinecap="round" opacity=".6" />}
+    </g>;
+  };
   return (
-    <g transform={`translate(${x},${y}) scale(${(flip ? -1 : 1) * scale},${scale})`}>
+    <g transform={`translate(${x},${y}) scale(${(flip ? -1 : 1) * scale},${scale * (1 + breath * 0.006)})`}>
       <defs>{Lg('top', look.top)}{Lg('pants', look.pants)}{Lg('in', look.inner)}
-        <radialGradient id={`${id}-face`} cx={lightSide === 1 ? 0.65 : 0.35} cy=".4" r=".75"><stop offset="0" stopColor={shade(look.skin, 1.12)} /><stop offset=".6" stopColor={look.skin} /><stop offset="1" stopColor={shade(look.skin, 0.55)} /></radialGradient></defs>
+        <radialGradient id={`${id}-face`} cx={lightSide === 1 ? 0.62 : 0.38} cy=".42" r=".8"><stop offset="0" stopColor={dk(1.1)} /><stop offset=".6" stopColor={look.skin} /><stop offset="1" stopColor={dk(0.55)} /></radialGradient></defs>
       <ellipse cx="0" cy="612" rx={140 * w} ry="20" fill="#000" opacity=".4" />
-      {/* ноги */}
       <rect x={-70 * w} y="405" width={56 * w} height="195" rx="18" fill={`url(#${id}-pants)`} /><rect x={14 * w} y="405" width={56 * w} height="195" rx="18" fill={`url(#${id}-pants)`} />
       <path d={`M${-80 * w} 600 Q${-70 * w} 578 ${-14 * w} 584 L${-12 * w} 612 L${-84 * w} 612Z`} fill={look.shoes ?? '#15171b'} /><path d={`M${80 * w} 600 Q${70 * w} 578 ${14 * w} 584 L${12 * w} 612 L${84 * w} 612Z`} fill={look.shoes ?? '#15171b'} />
-      {/* торс */}
       <path d={`M${-104 * w} 128 Q${-118 * w} 300 ${-96 * w} 420 L${96 * w} 420 Q${118 * w} 300 ${104 * w} 128 Q0 100 ${-104 * w} 128Z`} fill={`url(#${id}-top)`} />
       <path d={`M${-34 * w} 126 L${34 * w} 126 L${28 * w} 420 L${-28 * w} 420Z`} fill={`url(#${id}-in)`} />
       <path d={`M${-34 * w} 126 L${-28 * w} 420`} stroke={shade(look.top, 0.45)} strokeWidth="5" /><path d={`M${34 * w} 126 L${28 * w} 420`} stroke={shade(look.top, 0.45)} strokeWidth="5" />
       <path d={`M${-70 * w} 200 Q${-80 * w} 300 ${-66 * w} 380`} fill="none" stroke={shade(look.top, 0.55)} strokeWidth="6" opacity=".6" />
-      {/* руки */}
       {pose !== 'mouth' && <><Sleeve s={[-98 * w, 150]} t={ps.l} /><Sleeve s={[98 * w, 150]} t={ps.r} /></>}
       {pose === 'mouth' && <Sleeve s={[-98 * w, 150]} t={ps.l} />}
-      {ps.item === 'notebook' && <g transform="translate(0,292) rotate(-4)"><rect x="-52" y="-40" width="104" height="80" rx="6" fill="#1f3b2d" /><rect x="-52" y="-40" width="104" height="80" rx="6" fill="none" stroke="#0e1d16" strokeWidth="4" /><path d="M-44 -22 H44 M-44 -2 H44 M-44 18 H30" stroke="#8fb39d" strokeWidth="3" opacity=".6" /></g>}
-      {/* голова */}
-      <rect x="-26" y="86" width="52" height="56" fill={shade(look.skin, 0.75)} />
-      <ellipse cx="0" cy="30" rx="78" ry="92" fill={`url(#${id}-face)`} />
-      <ellipse cx={-80} cy="38" rx="13" ry="22" fill={shade(look.skin, 0.9)} /><ellipse cx="80" cy="38" rx="13" ry="22" fill={shade(look.skin, 0.9)} />
-      {look.stubble && <path d="M-60 62 Q0 150 60 62 Q40 118 0 124 Q-40 118 -60 62Z" fill="#1a1512" opacity=".28" />}
-      {look.style === 'short' && <path d="M-80 18 Q-84 -78 0 -82 Q84 -78 80 18 Q70 -30 0 -34 Q-70 -30 -80 18Z" fill={look.hair} />}
-      {look.style === 'messy' && <path d="M-82 20 Q-92 -84 -10 -88 Q70 -92 82 20 Q74 -40 30 -34 Q10 -52 -20 -34 Q-60 -40 -82 20Z" fill={look.hair} />}
-      {look.style === 'bun' && <g><path d="M-80 20 Q-86 -78 0 -84 Q86 -78 80 20 Q64 -26 0 -30 Q-64 -26 -80 20Z" fill={look.hair} /><circle cx="0" cy="-96" r="30" fill={look.hair} /></g>}
-      {look.style === 'cap' && <path d="M-82 8 Q-80 -86 0 -88 Q80 -86 82 8Z" fill={look.hair} />}
-      <g transform={`translate(${lookX},0)`}>
-        <path d={`M-52 ${-2 + bl} L-14 ${-6 + bl}`} stroke={look.hair} strokeWidth="9" strokeLinecap="round" transform={mood === 'stern' ? 'rotate(10 -30 0)' : undefined} />
-        <path d={`M52 ${-2 + br} L14 ${-6 + br}`} stroke={look.hair} strokeWidth="9" strokeLinecap="round" transform={mood === 'stern' ? 'rotate(-10 30 0)' : undefined} />
-        {[-32, 32].map((ex) => <g key={ex}><ellipse cx={ex} cy="22" rx={eyeR + 6} ry={eyeR + 2} fill="#e9e6df" /><circle cx={ex + lookX * 0.4} cy="24" r={eyeR - 3} fill="#16181c" /></g>)}
-        {mood === 'tired' && [-32, 32].map((ex) => <path key={ex} d={`M${ex - 18} 38 Q${ex} 46 ${ex + 18} 38`} fill="none" stroke={shade(look.skin, 0.62)} strokeWidth="6" strokeLinecap="round" opacity=".7" />)}
-        <path d="M0 30 L-6 62 L8 64" fill="none" stroke={shade(look.skin, 0.62)} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-        {mouth}
-        {look.glasses && <g fill="none" stroke="#111" strokeWidth="5"><circle cx="-32" cy="22" r="26" /><circle cx="32" cy="22" r="26" /><path d="M-6 22 H6" /></g>}
+      {ps.item === 'notebook' && <g transform="translate(0,292) rotate(-4)"><rect x="-52" y="-40" width="104" height="80" rx="6" fill="#1f3b2d" /><path d="M-44 -22 H44 M-44 -2 H44 M-44 18 H30" stroke="#8fb39d" strokeWidth="3" opacity=".6" /></g>}
+      {ps.item === 'kettle' && <g transform="translate(66,300)"><path d="M-30 -10 Q-34 -50 0 -52 Q34 -50 30 -10 L36 24 L-36 24Z" fill="#4a6b6a" /><path d="M30 -20 Q56 -24 58 -44 L48 -46 Q46 -34 30 -34Z" fill="#4a6b6a" /><path d="M-26 -34 Q0 -70 26 -34" fill="none" stroke="#2a3a3a" strokeWidth="6" /><rect x="-36" y="20" width="72" height="8" rx="3" fill="#2a3a3a" /></g>}
+      {ps.item === 'candle' && <g transform="translate(58,282)"><rect x="-9" y="-44" width="18" height="70" rx="3" fill="#e4ddc8" /><rect x="-30" y="24" width="60" height="9" rx="4" fill="#59626a" /><path d="M0 -44 V-54" stroke="#222" strokeWidth="3" /></g>}
+      {/* шея и тень под подбородком */}
+      <rect x="-27" y="84" width="54" height="58" fill={dk(0.72)} />
+      <ellipse cx="0" cy="104" rx="46" ry="14" fill="#000" opacity=".22" />
+      {/* уши */}
+      <ellipse cx="-71" cy="30" rx="10" ry="17" fill={dk(0.88)} /><ellipse cx="71" cy="30" rx="10" ry="17" fill={dk(0.88)} />
+      {/* голова: скулы и челюсть */}
+      <path d="M-70 4 C-74 -58 -42 -78 0 -78 C42 -78 74 -58 70 4 C68 48 44 98 0 106 C-44 98 -68 48 -70 4Z" fill={`url(#${id}-face)`} />
+      <ellipse cx={-34} cy="50" rx="22" ry="12" fill={dk(0.6)} opacity=".07" /><ellipse cx={34} cy="50" rx="22" ry="12" fill={dk(0.6)} opacity=".07" />
+      {look.stubble && <path d="M-60 36 Q-58 92 0 102 Q58 92 60 36 Q44 72 0 70 Q-44 72 -60 36Z" fill="#17120f" opacity=".3" />}
+      {age && <g stroke={dk(0.55)} strokeWidth="3" strokeLinecap="round" opacity=".55" fill="none"><path d="M-40 -44 Q0 -54 40 -44" /><path d="M-36 -34 Q0 -42 36 -34" /><path d="M-28 52 Q-30 68 -22 80" /><path d="M28 52 Q30 68 22 80" /></g>}
+      {/* волосы */}
+      {look.style === 'short' && <path d="M-74 4 C-82 -74 -40 -94 0 -94 C40 -94 82 -74 74 4 C66 -30 44 -50 0 -52 C-44 -50 -66 -30 -74 4Z" fill={look.hair} />}
+      {look.style === 'messy' && <path d="M-76 6 C-90 -80 -40 -100 -4 -96 C50 -104 90 -70 76 6 C70 -34 52 -44 34 -40 C24 -56 4 -52 -8 -42 C-28 -52 -62 -40 -76 6Z" fill={look.hair} />}
+      {look.style === 'bun' && <g><path d="M-74 6 C-80 -72 -40 -92 0 -92 C40 -92 80 -72 74 6 C62 -28 40 -46 0 -48 C-40 -46 -62 -28 -74 6Z" fill={look.hair} /><circle cx="0" cy="-102" r="28" fill={look.hair} /></g>}
+      {look.style === 'cap' && <path d="M-76 0 Q-74 -92 0 -92 Q74 -92 76 0Z" fill={look.hair} />}
+      {/* лицо */}
+      <g>
+        {[-1, 1].map((sd) => (
+          <path key={sd} d={`M${sd * 12} -6 Q${sd * 26} -14 ${sd * 44} -6`} fill="none" stroke={look.hair} strokeWidth="7.5" strokeLinecap="round"
+            transform={`translate(0,${bm.lift}) rotate(${bm.tilt * (sd === -1 ? 1 : -1) * -1} ${sd * 28} -8)`} />))}
+        <Eye cx={-28} dir={-1} /><Eye cx={28} dir={1} />
+        <path d="M0 22 C6 36 10 46 12 54 C6 60 -6 60 -12 54 C-8 50 -4 38 0 22Z" fill={dk(0.78)} opacity=".5" />
+        <path d="M-12 55 Q0 61 12 55" fill="none" stroke={dk(0.5)} strokeWidth="3.5" strokeLinecap="round" opacity=".75" />
+        {faceMouth}
       </g>
       {pose === 'mouth' && <Sleeve s={[98 * w, 150]} t={ps.r} />}
     </g>
@@ -147,15 +176,23 @@ export const RoomWindow: React.FC<{open?: boolean}> = ({open}) => (
   </g>
 );
 
-/** Свет, тьма, зерно — накладывается поверх всей сцены. */
-export const Grade: React.FC<{dark?: number}> = ({dark = 0.55}) => (
-  <g>
-    <defs>
-      <radialGradient id="vig" cx=".5" cy=".46" r=".78"><stop offset=".35" stopColor="#04070c" stopOpacity="0" /><stop offset="1" stopColor="#04070c" stopOpacity="0.9" /></radialGradient>
-      <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="4" /><feColorMatrix values="0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .13 0" /></filter>
-    </defs>
-    <rect width="1080" height="1920" fill="#06101c" opacity={dark * 0.45} />
-    <rect width="1080" height="1920" fill="url(#vig)" />
-    <rect width="1080" height="1920" filter="url(#grain)" />
-  </g>
-);
+/** Свет, тьма, зерно — накладывается поверх всей сцены. red — красная кромка 0..1, flicker — дрожь лампы 0..1. */
+export const Grade: React.FC<{dark?: number; red?: number; flicker?: number; danger?: boolean}> = ({dark = 0.55, red = 0, flicker = 0, danger = false}) => {
+  const f = useCurrentFrame();
+  const fl = flicker ? flicker * (0.5 + 0.5 * Math.sin(f * 1.7) * Math.sin(f * 0.43 + 1)) * 0.5 : 0;
+  return (
+    <g>
+      <defs>
+        <radialGradient id="vig" cx=".5" cy=".46" r=".78"><stop offset=".35" stopColor="#04070c" stopOpacity="0" /><stop offset="1" stopColor="#04070c" stopOpacity="0.9" /></radialGradient>
+        <radialGradient id="redge" cx=".5" cy=".5" r=".75"><stop offset=".5" stopColor="#8c1c1c" stopOpacity="0" /><stop offset="1" stopColor="#8c1c1c" stopOpacity="1" /></radialGradient>
+        <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed={4 + (f % 3)} /><feColorMatrix values="0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .13 0" /></filter>
+      </defs>
+      <rect width="1080" height="1920" fill="#06101c" opacity={dark * 0.45} />
+      {danger && <rect width="1080" height="1920" fill="#2a0707" opacity=".16" />}
+      <rect width="1080" height="1920" fill="url(#vig)" />
+      {red > 0 && <rect width="1080" height="1920" fill="url(#redge)" opacity={red} />}
+      {fl > 0 && <rect width="1080" height="1920" fill="#000" opacity={fl} />}
+      <rect width="1080" height="1920" filter="url(#grain)" />
+    </g>
+  );
+};
