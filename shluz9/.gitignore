@@ -3,3 +3,4 @@ episodes/*/audio/_vo/
 episodes/*/_temp_clips/
 __pycache__/
 *.pyc
+hf-smoke/
