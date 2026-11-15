@@ -58,9 +58,45 @@ def handle():  # ручка двери: скрип + щелчок
 def room():    # комнатный тон, зацикленный ровно (12 с)
     t = t_(12.0); x = 0.5 * np.sin(2 * np.pi * 55 * t) + 0.25 * np.sin(2 * np.pi * 110.5 * t) + 0.12 * lp(rng.standard_normal(len(t)), 40)
     return x
+
+def bark():    # далёкий лай: два коротких хриплых «гав» через фильтр расстояния
+    out = np.zeros(int(1.0 * SR))
+    for at, f0 in [(0.05, 420), (0.42, 380)]:
+        n = int(0.22 * SR); t = np.arange(n) / SR
+        f = f0 * (1 - 0.35 * t / 0.22); tone = 2 * ((np.cumsum(f) / SR) % 1) - 1
+        v = lp(tone, 5) * np.exp(-((t - 0.07) ** 2) / 0.002) + 0.3 * lp(rng.standard_normal(n), 3) * np.exp(-t * 20)
+        i = int(at * SR); out[i:i + n] += v[: len(out) - i]
+    return lp(out, 9)
+def kettle():  # падает чайник: удар, дребезг, перекат
+    out = np.zeros(int(2.2 * SR))
+    for at, f, a in [(0.0, 320, 1.0), (0.09, 540, 0.7), (0.22, 760, 0.5), (0.4, 880, 0.35), (0.62, 700, 0.25)]:
+        n = int(0.5 * SR); t = np.arange(n) / SR
+        h = (np.sin(2 * np.pi * f * t) + 0.6 * np.sin(2 * np.pi * f * 2.3 * t)) * np.exp(-t * 13) * a
+        i = int(at * SR); out[i:i + n] += h[: len(out) - i]
+    t = np.arange(int(1.2 * SR)) / SR; roll = lp(rng.standard_normal(len(t)), 20) * (0.5 + 0.5 * np.sin(2 * np.pi * 14 * t)) * np.exp(-t * 2.6) * 0.5
+    i = int(0.5 * SR); out[i:i + len(roll)] += roll[: len(out) - i]
+    return out
+def clicks():  # сухие щелчки «слушателей» (серия: нарастание и стихание), тихо и неприятно
+    out = np.zeros(int(2.6 * SR)); k = 0
+    for at in [0.2, 0.31, 0.38, 0.52, 0.6, 0.67, 0.83, 0.9, 1.15, 1.22, 1.5, 1.58, 1.62, 1.95]:
+        n = int(0.05 * SR); t = np.arange(n) / SR
+        c = (np.sin(2 * np.pi * (1800 + 600 * rng.random()) * t) + 0.5 * hp(rng.standard_normal(n), 4)) * np.exp(-t * 90) * (0.6 + 0.4 * rng.random())
+        i = int(at * SR); out[i:i + n] += c[: len(out) - i]
+    return out
+def steps():   # шаги в носках: мягкие глухие
+    out = np.zeros(int(2.4 * SR))
+    for at in [0.1, 0.65, 1.2, 1.78]:
+        n = int(0.2 * SR); t = np.arange(n) / SR
+        st = lp(rng.standard_normal(n), 30) * np.exp(-t * 22) + np.sin(2 * np.pi * 70 * t) * np.exp(-t * 26)
+        i = int(at * SR); out[i:i + n] += st[: len(out) - i] * 0.8
+    return out
+def siren_far():
+    t = t_(3.0); f = 520 + 260 * (0.5 - 0.5 * np.cos(2 * np.pi * t / 1.4)); x = np.sin(2 * np.pi * np.cumsum(f) / SR)
+    return lp(x, 8) * np.exp(-((t - 1.0) ** 2) / 1.2) * np.where(t < 2.2, 1, np.exp(-(t - 2.2) * 40))
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     for n, f, p in [("drip", drip, .6), ("creak", creak, .5), ("dishes", dishes, .6), ("click", click, .7), ("scrape", scrape, .5),
-                    ("water", water, .5), ("pen", pen, .4), ("keys", keys, .6), ("handle", handle, .6), ("room", room, .25)]:
+                    ("water", water, .5), ("pen", pen, .4), ("keys", keys, .6), ("handle", handle, .6), ("room", room, .25), ("bark", bark, .5), ("kettle", kettle, .8), ("clicks", clicks, .5), ("steps", steps, .5), ("siren_far", siren_far, .5)]:
         save(n, f(), p)
     print("ok")

@@ -24,7 +24,9 @@ export type ZExtra =
   | {kind: 'wardrobe'; x: [number, number]; y: number; h: number; cue: string; stopCue: string}
   | {kind: 'water'; x: number; y: number; h: number}
   | {kind: 'candle'; x: number; y: number; h: number; cue?: string}
-  | {kind: 'hand'; at: number};
+  | {kind: 'hand'; at: number}
+  | {kind: 'note'; x: number; y: number; w: number; text: string; cue?: string; at?: number}
+  | {kind: 'lights'; n: number; x0: number; x1: number; y: number; at: number; step: number};
 export type ZUi = {kind: string; cue?: string; at?: number; until?: number; props?: Record<string, unknown>; cues?: Record<string, string>};
 export type ZDef = {
   bg: string; bg2?: {id: string; cue?: string; at?: number}; blackUntil?: number;
@@ -73,6 +75,23 @@ const Extras: React.FC<{def: ZDef; words: Word[]; id: string; over?: boolean}> =
       if (!on) return null;
       const h = e.h * 1920, x = e.x * 1080, y = e.y * 1920;
       return <g key={i}><rect x={x - h * 0.1} y={y - h} width={h * 0.2} height={h} rx="3" fill="#e4ddc8" /><rect x={x - h * 0.34} y={y - 4} width={h * 0.68} height={h * 0.1} rx="4" fill="#59626a" /></g>;
+    }
+    if (e.kind === 'note') {
+      const a = e.at ?? (e.cue ? cueT(words, e.cue, id) : 0);
+      const p = interpolate(t, [a, a + 0.4], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+      const w = e.w * 1080, x = e.x * 1080, y = e.y * 1920;
+      return <g key={i} opacity={p} transform={`translate(${x},${y + (1 - p) * 20}) rotate(-3)`}>
+        <rect x={-w / 2} y={-w * 0.28} width={w} height={w * 0.56} fill="#d9d2b8" /><rect x={-w / 2} y={-w * 0.28} width={w} height={w * 0.56} fill="none" stroke="#8a7f62" strokeWidth="3" />
+        <path d={`M${-w / 2 + 12} ${-w * 0.1} H${w / 2 - 12} M${-w / 2 + 12} ${w * 0.08} H${w / 2 - 12}`} stroke="#b7ae92" strokeWidth="2" />
+        <text x="0" y={w * 0.05} textAnchor="middle" fontFamily="'VF Montserrat', sans-serif" fontWeight={800} fontStyle="italic" fontSize={w * 0.11} fill="#2a2418">{e.text}</text></g>;
+    }
+    if (e.kind === 'lights') {
+      return <g key={i}>{Array.from({length: e.n}).map((_, k) => {
+        const off = e.at + k * e.step, on = interpolate(t, [off, off + 0.35], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+        const vis = interpolate(t, [e.at - 0.8 + k * 0.05, e.at - 0.4 + k * 0.05], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+        const x = (e.x0 + (e.x1 - e.x0) * (k / Math.max(1, e.n - 1))) * 1080;
+        return <g key={k} opacity={on * vis}><circle cx={x} cy={e.y * 1920} r="26" fill="#ffd58a" opacity=".25" /><circle cx={x} cy={e.y * 1920} r="9" fill="#ffe6b0" /></g>;
+      })}</g>;
     }
     if (e.kind === 'hand' && over) {
       const p = interpolate(t, [e.at, e.at + 0.2], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});

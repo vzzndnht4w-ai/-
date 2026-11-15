@@ -20,7 +20,8 @@ MODELS = Path("/tmp/piper")           # сюда скачаны *.onnx (см. fe
 FPS, GAP, TAIL = 30, 0.35, 1.0
 SPK = {
     "narrator": {"model": "dmitri", "af": "highpass=f=90,lowpass=f=7000,acompressor=threshold=-20dB:ratio=3", "len": 0.94},
-    "mark":     {"model": "denis",  "af": "highpass=f=100,lowpass=f=6500", "len": 0.93},
+    "mark":     {"model": "denis",  "af": "highpass=f=160,lowpass=f=5200,volume=0.8", "len": 0.9},   # шёпот в кадре
+    "mark_v":   {"model": "denis",  "af": "highpass=f=90,lowpass=f=6500,acompressor=threshold=-20dB:ratio=3", "len": 0.9},  # закадр (Марк пишет в тетрадь)
     "lesha":    {"model": "denis",  "af": "rubberband=pitch=1.16:formant=shifted,highpass=f=120", "len": 0.92},
     "inna":     {"model": "denis",  "af": "rubberband=pitch=1.38:formant=shifted,highpass=f=160", "len": 0.92},
 }
