@@ -8,9 +8,11 @@ import type {Script, Timeline} from './types';
  * Список видео генерируется скриптом scripts/render.mjs → src/videos.generated.ts.
  */
 import {VIDEOS} from './videos.generated';
+import {TestScene} from './zombie/TestScene';
 
 export const Root: React.FC = () => (
   <>
+    <Composition id="ztest" component={TestScene} width={1080} height={1920} fps={30} durationInFrames={90} />
     {Object.entries(VIDEOS).map(([slug, v]) => {
       const script = v.script as unknown as Script;
       const timeline = v.timeline as unknown as Timeline;
