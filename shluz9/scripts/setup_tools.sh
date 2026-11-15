@@ -26,4 +26,11 @@ mkdir -p "$ROOT/tools/voices" && cd "$ROOT/tools/voices"
 for e in onnx onnx.json; do
   [ -f ru_RU-ruslan-medium.$e ] || curl -sL -o ru_RU-ruslan-medium.$e https://huggingface.co/rhasspy/piper-voices/resolve/main/ru/ru_RU/ruslan/medium/ru_RU-ruslan-medium.$e
 done
+# Silero v3 RU (зеркало HuggingFace; лицензия CC BY-NC-SA — только некоммерческое использование).
+# Файл — torch.package (pickle), поэтому сверяем контрольную сумму с проверенной версией.
+SILERO_SHA=cf60b47ec8a9c31046021d2d14b962ea56b8a5bf7061c98accaaaca428522f85
+if [ ! -f silero_v3_ru.pt ]; then
+  curl -sL -o silero_v3_ru.pt https://huggingface.co/imperialwool/silero-model-v3-ru/resolve/main/model.pt
+fi
+echo "$SILERO_SHA  silero_v3_ru.pt" | sha256sum -c - || { echo "Контрольная сумма Silero не совпала — файл удалён"; rm -f silero_v3_ru.pt; exit 1; }
 echo "Готово. Проверка: hyperframes doctor"

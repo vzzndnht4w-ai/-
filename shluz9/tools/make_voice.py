@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Озвучка серии 0: Piper (локально, русский). Артём — ruslan, Громов — denis.
+"""Озвучка серии 0: Silero v3 RU (локально, CPU). Артём — aidar, Громов — eugene.
 Каждому кадру подгоняется длительность под реальную длину речи, затем пересобираются
 prompts.json (duration_sec), subtitles.srt и audio/voiceover.mp3."""
 import json, re, subprocess, wave, sys
@@ -7,14 +7,20 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parent.parent
 EP=ROOT/"episodes/ep00_last_turn"; TMP=EP/"audio/_vo"; TMP.mkdir(parents=True,exist_ok=True)
 V=ROOT/"tools/voices"
-NARR=(str(V/"ru_RU-ruslan-medium.onnx"),1.14)
-GROM=("/tmp/piper/denis.onnx",1.12)
+import torch, numpy as np
+_imp = torch.package.PackageImporter(str(V/"silero_v3_ru.pt")); SIL = _imp.load_pickle("tts_models", "model"); SIL.to("cpu")
+SR = 48000
+# voice_performance: Артём — тихий, усталый шёпот-дневник; Громов — приглушённо, жёстко
+NARR = dict(speaker="aidar", rate="medium", pitch="low")
+GROM = dict(speaker="eugene", rate="medium", pitch="x-low")
 d=json.load(open(EP/"prompts.json"))
 
-def tts(text,model,ls,out):
-    subprocess.run(["piper","-m",model[0] if isinstance(model,tuple) else model,"--length-scale",str(ls),
-      "--sentence-silence","0.35","--noise-scale","0.5","--noise-w-scale","0.6","-f",str(out)],
-      input=text.encode(),check=True,capture_output=True)
+def tts(text,voice,ls,out):
+    """Синтез через SSML: паузы между предложениями, темп и высота по роли."""
+    sents=[x.strip() for x in re.split(r"(?<=[.!?…])\s+",text) if x.strip()]
+    body='<break time="350ms"/>'.join(sents)
+    ssml=f'<speak><prosody rate="{voice["rate"]}" pitch="{voice["pitch"]}">{body}</prosody></speak>'
+    SIL.save_wav(ssml_text=ssml, speaker=voice["speaker"], sample_rate=SR, put_accent=True, put_yo=True, audio_path=str(out))
 def dur(p):
     with wave.open(str(p)) as w: return w.getnframes()/w.getframerate()
 
@@ -43,12 +49,12 @@ for f in d["frames"]:
     i=f["id"]; wavs=[]
     for k,(v,txt) in enumerate(segs[i]):
         out=TMP/f"{i:02d}_{k}.wav"
-        if v=="g": tts(txt,GROM,1.2,out)
-        else: tts(txt,NARR,NARR[1],out)
+        if v=="g": tts(txt,GROM,0,out)
+        else: tts(txt,NARR,0,out)
         wavs.append((out,txt))
     speech=sum(dur(o) for o,_ in wavs)+0.18*(len(wavs)-1)
     # быстрая речь — ни в коем случае не ускоряем: растягиваем кадр
-    total=max(float(f["duration_sec"]), round(speech+PAD_LEAD+PAD_TAIL,2))
+    total=max(float(f.get("base_duration_sec",f["duration_sec"])), round(speech+PAD_LEAD+PAD_TAIL,2))
     f["duration_sec"]=round(total,2)
     f["_speech"]=round(speech,2)
     # субтитры: по фразам внутри кадра, пропорционально длине
@@ -57,12 +63,12 @@ for f in d["frames"]:
         ln=dur(o); srt.append((t0,t0+ln,txt)); t0+=ln+0.18
     # кадр-сегмент аудио: lead-silence + речь + хвост до total
     lst=TMP/f"{i:02d}_list.txt"; seg=TMP/f"{i:02d}_full.wav"
-    ins=[]; fl=[f"anullsrc=r=22050:cl=mono:d={PAD_LEAD}"]
-    cmd=["ffmpeg","-y","-loglevel","error","-f","lavfi","-t",str(PAD_LEAD),"-i","anullsrc=r=22050:cl=mono"]
+    ins=[]; fl=[f"anullsrc=r=48000:cl=mono:d={PAD_LEAD}"]
+    cmd=["ffmpeg","-y","-loglevel","error","-f","lavfi","-t",str(PAD_LEAD),"-i","anullsrc=r=48000:cl=mono"]
     for o,_ in wavs: cmd+=["-i",str(o)]
     n=len(wavs)
     flt="[0:a]"+"".join(f"[{j+1}:a]" for j in range(n))+f"concat=n={n+1}:v=0:a=1[a];[a]apad=whole_dur={total}[o]"
-    cmd+=["-filter_complex",flt,"-map","[o]","-ar","22050","-ac","1",str(seg)]
+    cmd+=["-filter_complex",flt,"-map","[o]","-ar","48000","-ac","1",str(seg)]
     subprocess.run(cmd,check=True)
     concat.append(seg); cur+=total
 # склейка + обработка голоса
@@ -71,7 +77,7 @@ raw=TMP/"all.wav"
 subprocess.run(["ffmpeg","-y","-loglevel","error","-f","concat","-safe","0","-i",str(lst),"-c","copy",str(raw)],check=True)
 fx=("highpass=f=90,lowpass=f=7800,equalizer=f=220:t=q:w=1:g=2,acompressor=threshold=-22dB:ratio=3:attack=8:release=120:makeup=4,"
     "aecho=0.8:0.5:55|110:0.16|0.08,loudnorm=I=-16:TP=-1.5:LRA=8")
-subprocess.run(["ffmpeg","-y","-loglevel","error","-i",str(raw),"-af",fx,"-ar","44100","-ac","2","-b:a","192k",str(EP/"audio/voiceover.mp3")],check=True)
+subprocess.run(["ffmpeg","-y","-loglevel","error","-i",str(raw),"-af",fx,"-ar","48000","-ac","2","-b:a","192k",str(EP/"audio/voiceover.mp3")],check=True)
 with open(EP/"subtitles.srt","w",encoding="utf-8") as fh:
     n=0
     for a,b,txt in srt:
