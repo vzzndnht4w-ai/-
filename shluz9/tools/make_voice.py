@@ -10,8 +10,8 @@ V=ROOT/"tools/voices"
 import hashlib, os
 SR = 48000
 # voice_performance: Артём — тихий, усталый шёпот-дневник (Wladimir); Громов — хриплый командир (David, eleven_v3)
-NARR = dict(engine="el", voice_id="Ep3Y4SsCIRz1gD3edazw", model="eleven_multilingual_v2",
-            settings={"stability": 0.45, "similarity_boost": 0.8, "style": 0.35, "use_speaker_boost": True, "speed": 1.12})
+NARR = dict(engine="el", voice_id="fng3xojnahJ5tKVqrRQJ", model="eleven_multilingual_v2",   # Doc — глубокий бас
+            settings={"stability": 0.5, "similarity_boost": 0.8, "style": 0.3, "use_speaker_boost": True, "speed": 1.1})
 GROM = dict(engine="el", voice_id="Ga0Zjw9ZBbevb3wIda0V", model="eleven_v3",
             settings={"stability": 0.5, "similarity_boost": 0.85},
             tags={"cmd": "[firm, commanding, low gravelly voice]", "whisper": "[whispering, hoarse, tense]"})
@@ -40,6 +40,7 @@ def _take(t,voice,seed):
 def tts(text,voice,ls,out):
     """ElevenLabs: TAKES дублей с разными seed, лучший по распознаванию речи (отсев коверканья слов). Кэш по хэшу."""
     ref=text.strip(); t=ref
+    t=re.sub(r"(?i)гермодвер",lambda mm: mm.group(0)[0]+"ермо-двер",t)   # ударение: гермо-двери (правка по слуху автора)
     if voice.get("tags"):
         t=(voice["tags"]["whisper"]+" "+t.replace("Тихо. ","Тихо... ") if "Тихо" in t else voice["tags"]["cmd"]+" "+t)
     best=None

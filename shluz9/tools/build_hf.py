@@ -39,7 +39,12 @@ index = f'''<!doctype html>
 '''
 (HF / "index.html").write_text(index, encoding="utf-8")
 # ---- субтитры: перегруппировка по смыслу (знаки препинания), не более 4 слов / 24 знаков в фразе ----
-words = [w for g in caps for w in g["words"]]
+words = []
+for g in caps:
+    for w in g["words"]:
+        if words and w["text"] in (",", ".", ";", ":", "!", "?", "…"):   # одиночный знак приклеиваем к предыдущему слову
+            words[-1] = dict(words[-1], text=words[-1]["text"] + w["text"], end=w["end"]); continue
+        words.append(dict(w))
 phr = []; cur = []
 def flush():
     global cur
