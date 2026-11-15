@@ -5,8 +5,9 @@ from pathlib import Path
 BASE = "https://gptunnel.ru/api/v2/media"
 def _req(method, path, body=None, timeout=120):
     args = ["curl", "-s", "-m", str(timeout), "-w", "\n%{http_code}", "-X", method, "-H", "Content-Type: application/json"]
-    if body is not None: args += ["-d", json.dumps(body)]
-    r = subprocess.run(args + [BASE + path], capture_output=True, text=True)
+    stdin = None
+    if body is not None: args += ["--data-binary", "@-"]; stdin = json.dumps(body)
+    r = subprocess.run(args + [BASE + path], input=stdin, capture_output=True, text=True)
     txt, _, code = r.stdout.rpartition("\n")
     try: return int(code or 0), json.loads(txt)
     except Exception: return int(code or 0), {"raw": txt[:300]}
