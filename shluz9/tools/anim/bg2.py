@@ -21,7 +21,7 @@ def vent(c, t, hor=900, fw=300, fh=330, lamp=GREEN, beam=None, grille=False, vib
     for k, base in [('l', '#1d2220'), ('r', '#1b201e'), ('c', '#111514'), ('f', '#151918')]:
         c.drawPath(quads[k], P(base)); texture_fill(c, quads[k], base, 'metal', 1.0, .9)
         c.save(); c.clipPath(quads[k], doAntiAlias=True)
-        c.drawRect(rect(0, 0, W, H), P('#7a3a14', .38 * rust, shader=tex_shader('rust', 1.4, 100, 50)))
+        c.drawRect(rect(0, 0, W, H), P('#7a3a14', .16 * rust, shader=tex_shader('rust', 1.4, 100, 50)))
         c.restore()
     # рёбра жёсткости
     for i in range(0, 14):
@@ -55,8 +55,10 @@ def vent(c, t, hor=900, fw=300, fh=330, lamp=GREEN, beam=None, grille=False, vib
     for u in (.35, .7):
         l, r, tp, bt = at(u); x, y = W / 2, tp + (bt - tp) * .02; sz = lerp(36, 9, u)
         c.drawRoundRect(rect(x - sz, y, x + sz, y + sz * .5), 4, 4, P(lamp, .9)); glow(c, x, y + 10, sz * 8, lamp, .28 * light)
-    # виньетка
-    c.drawRect(rect(0, 0, W, H), P('#000', 1, shader=rad(W / 2, hor, 1000, [('#000000', 0, 0), ('#000000', .2, .4), ('#000000', .85, 1)])))
+    # глубина: дальний конец уходит во тьму, ближние рёбра освещены лампой, общий холодный тон
+    c.drawRect(rect(0, 0, W, H), P('#031a14', .42))
+    c.drawRect(rect(0, 0, W, H), P('#000', 1, shader=rad(W / 2, hor, 560, [('#000000', .92, 0), ('#000000', .6, .45), ('#000000', 0, 1)])))
+    c.drawRect(rect(0, 0, W, H), P('#000', 1, shader=rad(W / 2, hor, 1100, [('#000000', 0, 0), ('#000000', .25, .5), ('#000000', .85, 1)])))
     if beam:
         bx, by, ang = beam
         L = 1900; w = 330

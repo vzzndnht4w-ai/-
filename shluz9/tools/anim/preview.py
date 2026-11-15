@@ -2,7 +2,7 @@ import sys, time
 sys.path.insert(0, '/home/user/-/shluz9/tools')
 from anim.core import *
 from anim import scenes
-SP='/tmp/claude-0/-home-user--/c51cf852-1cd7-4249-b168-faeefc3635d4/scratchpad/'
+SP='/tmp/claude-0/-home-user--/eafafbda-e908-50f4-a8dd-849cdd39fd73/scratchpad/'
 ids=[int(x) for x in sys.argv[1].split(',')]; tt=float(sys.argv[2]) if len(sys.argv)>2 else 1.5
 ims=[]
 for i in ids:

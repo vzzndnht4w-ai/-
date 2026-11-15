@@ -61,7 +61,7 @@ def s01(c, t, T):
     c.drawRect(rect(0, 0, W, H), P('#fff', 1, shader=tex_shader('concrete', 1.5), blend='mul'))
     bust(c, 'artyom', 500, 760, 4.6, t, dict(lightx=.7, lcol='#6bff9e', hx=-4, tired=1, look=(.4, .2), mouth=0))
     side_shade(c, -1, .86, .9)
-    hand(c, 548, 1385 - ease(t / 1.0) * 25, 2.9, 4, 'shush')
+    hand(c, 548, 1385 - ease(t / 1.0) * 25, 2.9, 4, 'shush', skin='#d2a284', shade='#9a6a58')
     recorder(c, 250, 1560 + math.sin(t * 2) * 4, 2.1, t, -12)
     c.drawRect(rect(0, 0, W, H), P('#ff3a2a', 1, shader=rad(300, 1500, 420, [('#ff3a2a', .10, 0), ('#ff3a2a', 0, 1)]), blend='add'))
 
@@ -159,8 +159,8 @@ def s14(c, t, T):
     bg.airlock(c, t, hor=780, alarm=True, flick=.3, lamp=GREEN, light=.8)
     bust(c, 'gromov', 360, 960, 2.7, t, dict(lightx=.5, lcol=ORANGE, turn=.7, look=(1, 0), under=.2, mouth=.3 * (math.sin(t * 6) > .3), frown=1))
     sh = (840, 1500); hd = (840 + math.sin(t * 3) * 4, 1050 - ease(t / .8) * 40)
-    arm(c, sh, hd, '#262b2c', '#b78e72', 480, 480, bend=-1, w=70)
-    hand(c, hd[0], hd[1], 2.4, 12, 'point', skin='#b78e72')
+    arm(c, sh, hd, '#2b3234', '#c49a7c', 270, 270, bend=1, w=48)
+    hand(c, hd[0], hd[1], 2.3, 8, 'point', skin='#c49a7c', shade='#8e6150')
     keys(c, 330, 1780, 2.0, t)
 
 def s15(c, t, T):
@@ -180,7 +180,7 @@ def s16(c, t, T):
     wallbg(c, t, ORANGE, 300, 200, '#1b2420')
     bust(c, 'mara', 400, 700, 2.3, t, dict(lightx=.5, lcol=ORANGE, tilt=11, eyes=.1, worry=1, tired=.8, hx=-10))
     bust(c, 'lyosha', 560, 1180, 2.1, t, dict(lightx=.5, lcol=ORANGE, tilt=-6, eyes=.3, fear=.4, breath=2.4))
-    hand(c, 372, 1262, 1.8, -10, 'flat', skin='#e0bfa6', shade='#98715f'); hand(c, 748, 1262, 1.8, 10, 'flat', skin='#e0bfa6', shade='#98715f')
+    hand(c, 372, 1262, 1.8, -10, 'flat', skin='#ebcab3', shade='#b98a78'); hand(c, 748, 1262, 1.8, 10, 'flat', skin='#ebcab3', shade='#b98a78')
     c.drawRect(rect(0, 0, W, H), P(ORANGE, 1, shader=rad(W, 100, 1300, [(ORANGE, .22 * pulse(t), 0), (ORANGE, 0, 1)]), blend='add')); vign(c, .75)
 
 def s17(c, t, T):
@@ -196,8 +196,8 @@ def s17(c, t, T):
     c.drawCircle(bx, by + 380, 36, P('#1d211f')); c.drawCircle(bx, by + 380, 18, P('#707a73'))
     c.drawRoundRect(rect(hx_ - 42, hy_ - 28, hx_ + 42, hy_ + 28), 14, 14, P('#a52a1c')); c.drawRoundRect(rect(hx_ - 42, hy_ - 28, hx_ + 42, hy_ + 28), 14, 14, P('#000', .8, 'stroke', 4))
     sh = (400 + 215 * .88 * 2.7 * .75, 1020 + 190 * 2.7 * .85)
-    arm(c, sh, (hx_, hy_ + 10), '#566059', '#c79b7d', 520, 520, bend=1, w=62)
-    hand(c, hx_, hy_ + 10, 2.0, 0, 'fist', skin='#c79b7d')
+    arm(c, sh, (hx_, hy_ + 10), '#5a655e', '#d2a284', 340, 340, bend=1, w=46)
+    hand(c, hx_, hy_ + 10, 2.0, 0, 'fist', skin='#d2a284', shade='#9a6a58')
     c.drawRect(rect(0, 0, W, H), P(ORANGE, 1, shader=rad(W, 200, 1300, [(ORANGE, .28 * pulse(t), 0), (ORANGE, 0, 1)]), blend='add')); vign(c, .7)
 
 def s18(c, t, T):
@@ -207,8 +207,8 @@ def s18(c, t, T):
     wr = 640 * .27 * 1.12
     for k, sgn in enumerate((-1, 1)):
         a = math.radians(ang + 90 + sgn * 70); wx, wy = W / 2 + math.cos(a) * wr * 1.0, 900 + math.sin(a) * wr * 1.0
-        arm(c, (W / 2 + sgn * 330, 1840), (wx, wy), '#566059', '#c79b7d', 520, 520, bend=sgn, w=44)
-        hand(c, wx, wy, 1.8, 0, 'fist')
+        arm(c, (W / 2 + sgn * 400, 2080), (wx, wy), '#5a655e', '#d2a284', 545, 545, bend=sgn, w=46)
+        hand(c, wx, wy, 1.8, 0, 'fist', skin='#d2a284', shade='#9a6a58')
     bust(c, 'artyom', 540, 1560 + math.sin(t * 5) * 4, 1.5, t, dict(lightx=.6, lcol=ORANGE, squint=.7, frown=1, mouth=.3, tired=1, breath=2.5))
     c.drawRect(rect(0, 0, W, H), P(ORANGE, 1, shader=rad(W / 2, 100, 1300, [(ORANGE, .2 * pulse(t), 0), (ORANGE, 0, 1)]), blend='add')); vign(c, .8)
 
@@ -297,7 +297,7 @@ def s28(c, t, T):
     c.drawPaint(P('#060a09')); texture_fill(c, poly([(0, 0), (W, 0), (W, H), (0, H)]), '#22302b', 'concrete', 1.1, .9)
     bg.door(c, 920, 960, 640, t, 0, 0, lamp=GREEN, light=.9)
     bust(c, 'artyom', 360, 1000, 2.9, t, dict(lightx=.8, lcol='#6bff9e', tilt=16, turn=.9, eyes=.1, tired=1, breath=1.5, hx=40, hy=10))
-    hand(c, 640, 1330, 2.4, 78, 'flat')
+    hand(c, 640, 1330, 2.4, 78, 'flat', skin='#d2a284', shade='#9a6a58')
     vign(c, .85)
 
 def s29(c, t, T):
@@ -343,7 +343,7 @@ def s31(c, t, T):
         amp = 8 * math.sin(t * 60 + k) * (.5 + .5 * math.sin(t * 5))
         y = 1000 + k * 0
     py = 1080 + math.sin(t * 70) * 6 * (.6 + .4 * math.sin(t * 4))
-    c.drawRect(rect(-40, py - 110, W + 40, py + 110), P('#2b312d'))
+    c.drawRect(rect(-40, py - 110, W + 40, py + 110), P('#1d2a26'))
     c.drawRect(rect(-40, py - 110, W + 40, py + 110), P('#fff', 1, shader=lin(0, py - 110, 0, py + 110, [('#ffffff', .3, 0), ('#000000', 0, .35), ('#000000', .6, 1)])))
     c.drawRect(rect(-40, py - 110, W + 40, py + 110), P('#7a3a14', .35, shader=tex_shader('rust', 1.2, 10, 10)))
     for x in (160, 620, 940): c.drawRect(rect(x, py - 120, x + 38, py + 120), P('#0e1110')); c.drawRect(rect(x + 3, py - 120, x + 10, py + 120), P('#889890', .4))
@@ -358,8 +358,8 @@ def s32(c, t, T):
     k = ease(t / 1.2)
     bust(c, 'gromov', 470, 1020, 2.9, t, dict(lightx=-.5, lcol='#6bff9e', pale=.55, fear=.3, tired=1, frown=1, look=(.3, 0)))
     hd = (840, 1500 - k * 740)
-    arm(c, (840, 1650), (hd[0], hd[1] + 70), '#262b2c', '#b78e72', 480, 480, bend=1, w=72)
-    hand(c, hd[0], hd[1], 2.6, 0, 'fist', skin=mix('#b78e72', '#cfd6cc', .5))
+    arm(c, (840, 1650), (hd[0], hd[1] + 70), '#2b3234', '#c49a7c', 480, 480, bend=1, w=50)
+    hand(c, hd[0], hd[1], 2.6, 0, 'fist', skin=mix('#c49a7c', '#cfd6cc', .5), shade=mix('#8e6150', '#5a6660', .5))
     vign(c, .85)
 
 def s33(c, t, T):

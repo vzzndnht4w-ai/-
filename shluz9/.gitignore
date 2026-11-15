@@ -6,3 +6,8 @@ __pycache__/
 hf-smoke/
 episodes/*/clips/
 episodes/*/audio/ambient_sfx.wav
+hf-ep00/assets/clips/
+hf-ep00/out/
+hf-ep00/.hyperframes/
+hf-ep00/node_modules/
+*.mp4

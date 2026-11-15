@@ -13,7 +13,7 @@ def render_scene(args):
     out = ep / "clips" / f"{fr['id']:02d}.mp4"; T = float(fr["duration_sec"]); n = int(round(T * FPS))
     fn = scenes.SCENES[fr["id"]]; motion = fr.get("motion", "zoom_in")
     p = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgba", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
-        "-vf", "noise=alls=9:allf=t,format=yuv420p", "-c:v", "libx264", "-preset", "medium", "-crf", "17", "-pix_fmt", "yuv420p", str(out)], stdin=subprocess.PIPE)
+        "-vf", "format=yuv420p", "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", str(out)], stdin=subprocess.PIPE)
     f = Frame(); t0 = time.time()
     for i in range(n):
         t = i / FPS; c = f.c; c.save(); c.clear(0xFF000000)
